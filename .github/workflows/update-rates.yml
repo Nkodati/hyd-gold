@@ -1,0 +1,63 @@
+name: Update Gold Rates
+
+on:
+  schedule:
+    # 2:30 AM UTC = 8:00 AM IST
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-rates:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements.txt
+
+      - name: Run scraper
+        run: python scripts/scrape_rates.py
+
+      - name: Check for changes
+        id: git_status
+        run: |
+          if git diff --quiet -- public/rates.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push updated rates
+        if: steps.git_status.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATE_STR=$(date -u +"%d %b %Y")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/rates.json
+          git commit -m "chore: update gold rates ${DATE_STR}"
+          git push
+
+      - name: Trigger Vercel deploy
+        if: steps.git_status.outputs.changed == 'true'
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK is not set; skipping deploy hook call."
+            exit 0
+          fi
+          curl -X POST "$VERCEL_DEPLOY_HOOK"
+
