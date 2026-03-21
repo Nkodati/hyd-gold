@@ -15,6 +15,10 @@ GOODRETURNS_URLS = [
 BANKBAZAAR_URLS = [
     "https://msn.bankbazaar.com/gold-rate-hyderabad.html",
     "https://www.bankbazaar.com/gold-rate/hyderabad.html",
+    "https://www.bankbazaar.com/gold-rate-telangana.html",
+]
+POLICYBAZAAR_URLS = [
+    "https://www.policybazaar.com/gold-rate/hyderabad/",
 ]
 
 IST_OFFSET_MINUTES = 5 * 60 + 30  # UTC+5:30
@@ -30,6 +34,7 @@ HEADERS = {
     "Cache-Control": "no-cache",
     "Pragma": "no-cache",
 }
+FETCH_LOG: List[str] = []
 
 
 def now_ist() -> datetime:
@@ -77,12 +82,15 @@ def parse_price(text: str) -> Optional[float]:
 
 
 def fetch_url(url: str) -> Optional[str]:
-    for _ in range(2):
+    for attempt in range(1, 4):
         try:
             resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT_SECONDS)
-            if resp.status_code == 200 and resp.text:
+            FETCH_LOG.append(f"{url} -> {resp.status_code} (attempt {attempt})")
+            # Some sites may return non-200 with still-parseable content.
+            if resp.text:
                 return resp.text
         except Exception:
+            FETCH_LOG.append(f"{url} -> request_error (attempt {attempt})")
             continue
     return None
 
@@ -229,6 +237,44 @@ def scrape_bankbazaar() -> Optional[Dict[str, float]]:
         rates.update(extract_rates_from_text(soup.get_text(" ", strip=True)))
 
     return rates or None
+
+
+def scrape_policybazaar() -> Optional[Dict[str, float]]:
+    html = None
+    for url in POLICYBAZAAR_URLS:
+        html = fetch_url(url)
+        if html:
+            break
+    if not html:
+        return None
+
+    soup = BeautifulSoup(html, "lxml")
+    rates = extract_rates_from_text(soup.get_text(" ", strip=True))
+
+    # Table fallback if regex misses one key.
+    if "22k" not in rates or "24k" not in rates:
+        for table in soup.find_all("table"):
+            txt = table.get_text(" ", strip=True).lower()
+            if "22" not in txt and "24" not in txt:
+                continue
+            for row in table.find_all("tr"):
+                cells = [c.get_text(" ", strip=True) for c in row.find_all(["td", "th"])]
+                if not cells:
+                    continue
+                label = cells[0].lower()
+                value = parse_price(" ".join(cells[1:]))
+                if not value:
+                    continue
+                if "22" in label and ("k" in label or "carat" in label or "karat" in label):
+                    rates["22k"] = value
+                if "24" in label and ("k" in label or "carat" in label or "karat" in label):
+                    rates["24k"] = value
+                if "18" in label and ("k" in label or "carat" in label or "karat" in label):
+                    rates["18k"] = value
+
+    if "22k" in rates and "24k" in rates:
+        return rates
+    return None
 
 
 def normalize_to_per_gram(raw_rates: Dict[str, float]) -> Dict[str, float]:
@@ -408,8 +454,14 @@ def main() -> int:
     if raw is None:
         raw = scrape_bankbazaar()
     if raw is None:
+        raw = scrape_policybazaar()
+    if raw is None:
         # Both sources failed
-        print("ERROR: Failed to fetch rates from both GoodReturns and BankBazaar.", file=sys.stderr)
+        print("ERROR: Failed to fetch rates from all configured sources.", file=sys.stderr)
+        if FETCH_LOG:
+            print("Fetch attempts:", file=sys.stderr)
+            for line in FETCH_LOG:
+                print(f"- {line}", file=sys.stderr)
         return 1
 
     raw = merge_with_existing_if_partial(raw, existing)
