@@ -2,16 +2,34 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Dict, Any, Optional, List
 
 import requests
 from bs4 import BeautifulSoup
 
 
-GOODRETURNS_URL = "https://www.goodreturns.in/gold-rates/hyderabad.html"
-BANKBAZAAR_URL = "https://www.bankbazaar.com/gold-rate/hyderabad.html"
+GOODRETURNS_URLS = [
+    "https://www.goodreturns.in/gold-rates/hyderabad.html",
+    "https://www.goodreturns.in/gold-rates//hyderabad.html",
+]
+BANKBAZAAR_URLS = [
+    "https://msn.bankbazaar.com/gold-rate-hyderabad.html",
+    "https://www.bankbazaar.com/gold-rate/hyderabad.html",
+]
 
 IST_OFFSET_MINUTES = 5 * 60 + 30  # UTC+5:30
+REQUEST_TIMEOUT_SECONDS = 25
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-IN,en;q=0.9",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+}
 
 
 def now_ist() -> datetime:
@@ -32,11 +50,80 @@ def load_existing_rates(path: Path) -> Dict[str, Any]:
 
 
 def parse_price(text: str) -> Optional[float]:
-    # Extract first numeric token from a string like "₹ 5,123 / 10 gram"
+    # Extract plausible price token from strings like "₹ 5,123 / 10 gram".
+    # Avoid tiny numbers (e.g., "22" from "22 carat") by thresholding.
     import re
 
     cleaned = text.replace(",", "")
-    m = re.search(r"(\d+(\.\d+)?)", cleaned)
+    matches = re.findall(r"(\d+(?:\.\d+)?)", cleaned)
+    if not matches:
+        return None
+
+    values: List[float] = []
+    for token in matches:
+        try:
+            values.append(float(token))
+        except ValueError:
+            continue
+
+    if not values:
+        return None
+
+    plausible = [v for v in values if v >= 1000]
+    if plausible:
+        return max(plausible)
+
+    return None
+
+
+def fetch_url(url: str) -> Optional[str]:
+    for _ in range(2):
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT_SECONDS)
+            if resp.status_code == 200 and resp.text:
+                return resp.text
+        except Exception:
+            continue
+    return None
+
+
+def extract_rates_from_text(text: str) -> Dict[str, float]:
+    import re
+
+    patterns = {
+        "22k": [
+            r"(?:22\s*(?:carat|karat|k|kt)[^0-9₹]{0,50}₹?\s*([0-9,]+(?:\.[0-9]+)?))",
+            r"(?:₹?\s*([0-9,]+(?:\.[0-9]+)?)\s*[^a-zA-Z]{0,8}(?:22\s*(?:carat|karat|k|kt)))",
+        ],
+        "24k": [
+            r"(?:24\s*(?:carat|karat|k|kt)[^0-9₹]{0,50}₹?\s*([0-9,]+(?:\.[0-9]+)?))",
+            r"(?:₹?\s*([0-9,]+(?:\.[0-9]+)?)\s*[^a-zA-Z]{0,8}(?:24\s*(?:carat|karat|k|kt)))",
+        ],
+        "18k": [
+            r"(?:18\s*(?:carat|karat|k|kt)[^0-9₹]{0,50}₹?\s*([0-9,]+(?:\.[0-9]+)?))",
+            r"(?:₹?\s*([0-9,]+(?:\.[0-9]+)?)\s*[^a-zA-Z]{0,8}(?:18\s*(?:carat|karat|k|kt)))",
+        ],
+    }
+
+    out: Dict[str, float] = {}
+    collapsed = " ".join(text.split())
+    for key, key_patterns in patterns.items():
+        for pattern in key_patterns:
+            m = re.search(pattern, collapsed, flags=re.IGNORECASE)
+            if not m:
+                continue
+            value = parse_price(m.group(1))
+            if value:
+                out[key] = value
+                break
+    return out
+
+
+def parse_one_gram_today_from_table_text(table_text: str) -> Optional[float]:
+    import re
+
+    compact = " ".join(table_text.replace(",", "").split())
+    m = re.search(r"1\s*gram\s*₹?\s*([0-9]+(?:\.[0-9]+)?)", compact, flags=re.IGNORECASE)
     if not m:
         return None
     try:
@@ -46,21 +133,22 @@ def parse_price(text: str) -> Optional[float]:
 
 
 def scrape_goodreturns() -> Optional[Dict[str, float]]:
-    try:
-        resp = requests.get(GOODRETURNS_URL, timeout=20)
-        resp.raise_for_status()
-    except Exception:
+    html = None
+    for url in GOODRETURNS_URLS:
+        html = fetch_url(url)
+        if html:
+            break
+    if not html:
         return None
 
-    soup = BeautifulSoup(resp.text, "lxml")
+    soup = BeautifulSoup(html, "lxml")
 
     # GoodReturns typically has a table with headings like "22 Carat Gold Rate"
     rates: Dict[str, float] = {}
 
-    # Try to find any table that has "22 Carat", "24 Carat", etc.
     for table in soup.find_all("table"):
-        headings = [th.get_text(strip=True).lower() for th in table.find_all("th")]
-        if not any("22" in h and "carat" in h for h in headings):
+        table_text = table.get_text(" ", strip=True).lower()
+        if "carat" not in table_text and "karat" not in table_text and "22k" not in table_text:
             continue
 
         # Look for rows containing "22 Carat", "24 Carat", "18 Carat"
@@ -82,25 +170,41 @@ def scrape_goodreturns() -> Optional[Dict[str, float]]:
                 if price:
                     rates["18k"] = price
 
-    # Interpret scraped price as per 10g if it looks large, per-gram if small.
-    # We'll normalize to per-gram in the final builder.
+    if "22k" not in rates or "24k" not in rates:
+        rates.update(extract_rates_from_text(soup.get_text(" ", strip=True)))
+
     return rates or None
 
 
 def scrape_bankbazaar() -> Optional[Dict[str, float]]:
-    try:
-        resp = requests.get(BANKBAZAAR_URL, timeout=20)
-        resp.raise_for_status()
-    except Exception:
+    html = None
+    for url in BANKBAZAAR_URLS:
+        html = fetch_url(url)
+        if html:
+            break
+    if not html:
         return None
 
-    soup = BeautifulSoup(resp.text, "lxml")
+    soup = BeautifulSoup(html, "lxml")
     rates: Dict[str, float] = {}
 
-    # BankBazaar usually has a table with "24 Karat Gold Rate", etc.
+    # Primary path for BankBazaar: first two summary tables are usually 22K and 24K.
+    summary_tables: List[str] = []
     for table in soup.find_all("table"):
-        headings = [th.get_text(strip=True).lower() for th in table.find_all("th")]
-        if not any("karat" in h or "carat" in h for h in headings):
+        txt = table.get_text(" ", strip=True)
+        if "Gram" in txt and "Today" in txt and "Yesterday" in txt:
+            summary_tables.append(txt)
+    if len(summary_tables) >= 2:
+        p22 = parse_one_gram_today_from_table_text(summary_tables[0])
+        p24 = parse_one_gram_today_from_table_text(summary_tables[1])
+        if p22:
+            rates["22k"] = p22
+        if p24:
+            rates["24k"] = p24
+
+    for table in soup.find_all("table"):
+        table_text = table.get_text(" ", strip=True).lower()
+        if "karat" not in table_text and "carat" not in table_text and "22k" not in table_text:
             continue
 
         for row in table.find_all("tr"):
@@ -121,18 +225,38 @@ def scrape_bankbazaar() -> Optional[Dict[str, float]]:
                 if price:
                     rates["18k"] = price
 
+    if "22k" not in rates or "24k" not in rates:
+        rates.update(extract_rates_from_text(soup.get_text(" ", strip=True)))
+
     return rates or None
 
 
 def normalize_to_per_gram(raw_rates: Dict[str, float]) -> Dict[str, float]:
-    # Heuristic: if the value is > 2000, assume it's per 10g, convert to per gram.
+    # Heuristic: some sources expose per-10g values; convert only when very large.
+    # For this project, normal per-gram values are around 10k-20k.
     normalized = {}
     for key, value in raw_rates.items():
-        if value > 2000:
+        if value >= 50000:
             normalized[key] = value / 10.0
         else:
             normalized[key] = value
     return normalized
+
+
+def merge_with_existing_if_partial(raw_rates: Dict[str, float], existing: Dict[str, Any]) -> Dict[str, float]:
+    merged = dict(raw_rates)
+    old_rates = (existing or {}).get("rates") or {}
+
+    for key in ("22k", "24k"):
+        if key in merged:
+            continue
+        try:
+            old_value = float(old_rates.get(key, {}).get("perGram"))
+            if old_value > 0:
+                merged[key] = old_value
+        except Exception:
+            continue
+    return merged
 
 
 def derive_missing_and_silver(per_gram: Dict[str, float]) -> Dict[str, float]:
@@ -149,6 +273,26 @@ def derive_missing_and_silver(per_gram: Dict[str, float]) -> Dict[str, float]:
         result["silver"] = silver_per_gram
 
     return result
+
+
+def enforce_price_sanity(per_gram: Dict[str, float], existing: Dict[str, Any]) -> Dict[str, float]:
+    safe = dict(per_gram)
+    old_rates = (existing or {}).get("rates") or {}
+
+    # Guard against bad parses like 22/24/18 from carat labels.
+    for key in ("22k", "24k", "18k"):
+        value = safe.get(key)
+        if value is None:
+            continue
+        if value >= 1000:
+            continue
+        try:
+            fallback = float(old_rates.get(key, {}).get("perGram"))
+            if fallback >= 1000:
+                safe[key] = fallback
+        except Exception:
+            pass
+    return safe
 
 
 def compute_change(new_price: float, old_price: Optional[float]) -> int:
@@ -168,6 +312,15 @@ def update_monthly_trend(
     arr_22: List[float] = list(trend.get("22k") or [])
     arr_24: List[float] = list(trend.get("24k") or [])
     arr_18: List[float] = list(trend.get("18k") or [])
+
+    if labels and labels[-1] == date_label:
+        labels.pop()
+        if arr_22:
+            arr_22.pop()
+        if arr_24:
+            arr_24.pop()
+        if arr_18:
+            arr_18.pop()
 
     labels.append(date_label)
     arr_22.append(round(per_gram.get("22k", 0)))
@@ -259,8 +412,10 @@ def main() -> int:
         print("ERROR: Failed to fetch rates from both GoodReturns and BankBazaar.", file=sys.stderr)
         return 1
 
+    raw = merge_with_existing_if_partial(raw, existing)
     per_gram_raw = normalize_to_per_gram(raw)
     per_gram = derive_missing_and_silver(per_gram_raw)
+    per_gram = enforce_price_sanity(per_gram, existing)
 
     # Ensure we have at least 22k and 24k to proceed
     if "22k" not in per_gram or "24k" not in per_gram or "18k" not in per_gram or "silver" not in per_gram:
@@ -270,13 +425,11 @@ def main() -> int:
     payload = build_payload(existing, per_gram)
 
     # Only overwrite if the payload is different to avoid noisy commits.
-    prev_json = json.dumps(existing, sort_keys=True) if existing else ""
-    next_json = json.dumps(payload, indent=2, sort_keys=True)
-
-    if prev_json == next_json:
+    if existing == payload:
         print("No changes in rates; not updating rates.json")
         return 0
 
+    next_json = json.dumps(payload, indent=2)
     rates_path.write_text(next_json + "\n", encoding="utf-8")
     print(f"Updated {rates_path}")
     return 0
