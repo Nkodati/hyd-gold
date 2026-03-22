@@ -19,26 +19,14 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-IN,en;q=0.9",
     "Cache-Control": "no-cache",
-    "Referer": "https://groww.in/",
+    "Referer": "https://www.google.com/",
 }
 
 CITY_CONFIG = {
-    "chennai": {
-        "name": "Chennai",
-        "url": "https://groww.in/gold-rates/gold-rate-today-in-chennai",
-    },
-    "hyderabad": {
-        "name": "Hyderabad",
-        "url": "https://groww.in/gold-rates/gold-rate-today-in-hyderabad",
-    },
-    "bangalore": {
-        "name": "Bangalore",
-        "url": "https://groww.in/gold-rates/gold-rate-today-in-bangalore",
-    },
-    "ahmedabad": {
-        "name": "Ahmedabad",
-        "url": "https://groww.in/gold-rates/gold-rate-today-in-ahmedabad",
-    },
+    "chennai":   { "name": "Chennai",   "url": "https://www.policybazaar.com/gold-rate/chennai/" },
+    "hyderabad": { "name": "Hyderabad", "url": "https://www.policybazaar.com/gold-rate/hyderabad/" },
+    "bangalore": { "name": "Bangalore", "url": "https://www.policybazaar.com/gold-rate/bangalore/" },
+    "ahmedabad": { "name": "Ahmedabad", "url": "https://www.policybazaar.com/gold-rate/ahmedabad/" },
 }
 
 
@@ -57,15 +45,7 @@ def load_existing(path: Path) -> Dict[str, Any]:
         return {}
 
 
-def parse_inr(text: str) -> Optional[float]:
-    cleaned = re.sub(r"[₹,\s]", "", text)
-    try:
-        return float(cleaned)
-    except ValueError:
-        return None
-
-
-def scrape_groww_city(url: str, city_name: str) -> Optional[Dict[str, float]]:
+def scrape_policybazaar(url: str, city_name: str) -> Optional[Dict[str, float]]:
     try:
         resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT_SECONDS)
         resp.raise_for_status()
@@ -74,49 +54,43 @@ def scrape_groww_city(url: str, city_name: str) -> Optional[Dict[str, float]]:
         return None
 
     soup = BeautifulSoup(resp.text, "lxml")
+    text = soup.get_text(" ", strip=True)
+
     rates: Dict[str, float] = {}
-    found_prices = []
 
-    # Primary: find exactly "1 Gram" rows in tables
-    # Filter price to 1000–50000 to exclude per-10g values
-    for table in soup.find_all("table"):
-        for row in table.find_all("tr"):
-            cells = [td.get_text(strip=True) for td in row.find_all("td")]
-            if not cells:
-                continue
-            if cells[0].strip().lower() == "1 gram" and len(cells) >= 2:
-                price = parse_inr(cells[1])
-                if price and 1000 < price < 50000:
-                    found_prices.append(price)
+    # Primary: "Rs. 13,620 per gram for 22 karat gold"
+    p22 = re.search(r"Rs\.?\s*([\d,]+)\s*per gram for 22 karat", text, re.IGNORECASE)
+    p24 = re.search(r"Rs\.?\s*([\d,]+)\s*per gram for 24 karat", text, re.IGNORECASE)
 
-    # Fallback: regex on full page text
-    if len(found_prices) < 2:
-        page_text = soup.get_text(" ", strip=True)
-        matches = re.findall(r"1\s*Gram\s*₹\s*([\d,]+\.?\d*)", page_text)
-        for m in matches:
-            p = parse_inr(m)
-            if p and 1000 < p < 50000:
-                found_prices.append(p)
+    # Fallback 1: "22 karat gold rate...Rs. X per gram"
+    if not p22:
+        p22 = re.search(r"22.karat.gold.rate[^R]{0,50}Rs\.?\s*([\d,]+)\s*per gram", text, re.IGNORECASE)
+    if not p24:
+        p24 = re.search(r"24.karat.gold[^R]{0,50}Rs\.?\s*([\d,]+)\s*per gram", text, re.IGNORECASE)
 
-    # Deduplicate
-    found_prices = list(dict.fromkeys(found_prices))
+    # Fallback 2: "Rs. X per gram...22 karat"
+    if not p22:
+        p22 = re.search(r"Rs\.?\s*([\d,]+)\s*per gram[^.]*22 karat", text, re.IGNORECASE)
+    if not p24:
+        p24 = re.search(r"Rs\.?\s*([\d,]+)\s*per gram[^.]*24 karat", text, re.IGNORECASE)
 
-    if len(found_prices) >= 2:
-        found_prices_sorted = sorted(found_prices, reverse=True)
-        rates["24k"] = found_prices_sorted[0]
-        rates["22k"] = found_prices_sorted[1]
-    elif len(found_prices) == 1:
-        rates["24k"] = found_prices[0]
-        rates["22k"] = round((found_prices[0] / 999) * 916, 2)
+    if p22:
+        rates["22k"] = float(p22.group(1).replace(",", ""))
+    if p24:
+        rates["24k"] = float(p24.group(1).replace(",", ""))
 
     if "22k" not in rates or "24k" not in rates:
         print(f"  ERROR: Could not extract rates for {city_name}")
         return None
 
-    # Derive 18K from 22K using purity ratio
-    rates["18k"] = round((rates["22k"] / 916) * 750, 2)
+    # Sanity check
+    for key in ("22k", "24k"):
+        if not (5000 < rates[key] < 100000):
+            print(f"  ERROR: Suspicious {key} rate {rates[key]} for {city_name}")
+            return None
 
-    # Derive silver (~1.9% of 24K per gram)
+    # Derive 18K and silver
+    rates["18k"] = round((rates["22k"] / 916) * 750, 2)
     rates["silver"] = round(rates["24k"] * 0.019, 2)
 
     print(f"  {city_name}: 22K=₹{rates['22k']:.0f}  "
@@ -217,8 +191,8 @@ def main() -> int:
     failed: List[str] = []
 
     for city_key, config in CITY_CONFIG.items():
-        print(f"\nScraping {config['name']} from Groww...")
-        per_gram = scrape_groww_city(config["url"], config["name"])
+        print(f"\nScraping {config['name']} from PolicyBazaar...")
+        per_gram = scrape_policybazaar(config["url"], config["name"])
 
         if per_gram is None:
             print(f"  FAILED: Keeping existing rates for {config['name']}")
@@ -238,11 +212,7 @@ def main() -> int:
         print("\nERROR: All cities failed.", file=sys.stderr)
         return 1
 
-    payload = {
-        "lastUpdated": last_updated,
-        "cities": new_cities,
-    }
-
+    payload = {"lastUpdated": last_updated, "cities": new_cities}
     rates_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(f"\nrates.json updated successfully. Failed: {failed if failed else 'none'}")
     return 0
