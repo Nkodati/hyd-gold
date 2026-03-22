@@ -136,7 +136,7 @@ export default function PrivacyPolicyPage() {
         <p>
           For privacy-related questions or requests, please reach out via our{' '}
           <Link href="/contact">Contact</Link> page or email{' '}
-          <a href="mailto:goldratesindia4@gamil.com">goldratesindia4@gamil.com</a>.
+          <a href="mailto:goldratesindia4@gmail.com">goldratesindia4@gmail.com</a>.
         </p>
       </main>
     </div>
