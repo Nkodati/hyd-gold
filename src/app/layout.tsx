@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Script from 'next/script'
 import { Syne, DM_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -29,17 +28,19 @@ export const metadata: Metadata = {
     'live gold rate',
   ],
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  other: {
+    'google-adsense-account': 'ca-pub-2917360666100529',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <Script
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2917360666100529"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
       </head>
       <body className={`${syne.variable} ${dmMono.variable}`}>
