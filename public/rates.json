@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-22T19:52:42.932343+05:30",
+  "lastUpdated": "2026-03-22T19:59:14.799564+05:30",
   "cities": {
     "chennai": {
       "name": "Chennai",
@@ -7,22 +7,22 @@
         "22k": {
           "perGram": 13620,
           "per10g": 136200,
-          "change": 341
+          "change": 0
         },
         "24k": {
           "perGram": 14301,
           "per10g": 143010,
-          "change": -181
+          "change": 0
         },
         "18k": {
           "perGram": 11152,
           "per10g": 111518,
-          "change": 279
+          "change": 0
         },
         "silver": {
           "perGram": 272,
           "perKg": 271720,
-          "change": -3
+          "change": 0
         }
       },
       "monthlyTrend": {
@@ -86,22 +86,22 @@
         "22k": {
           "perGram": 13620,
           "per10g": 136200,
-          "change": 341
+          "change": 0
         },
         "24k": {
           "perGram": 14301,
           "per10g": 143010,
-          "change": -181
+          "change": 0
         },
         "18k": {
           "perGram": 11152,
           "per10g": 111518,
-          "change": 279
+          "change": 0
         },
         "silver": {
           "perGram": 272,
           "perKg": 271720,
-          "change": -3
+          "change": 0
         }
       },
       "monthlyTrend": {
@@ -165,22 +165,22 @@
         "22k": {
           "perGram": 13490,
           "per10g": 134900,
-          "change": 211
+          "change": 0
         },
         "24k": {
           "perGram": 14165,
           "per10g": 141650,
-          "change": -317
+          "change": 0
         },
         "18k": {
           "perGram": 11045,
           "per10g": 110453,
-          "change": 172
+          "change": 0
         },
         "silver": {
           "perGram": 269,
           "perKg": 269130,
-          "change": -6
+          "change": 0
         }
       },
       "monthlyTrend": {
@@ -244,22 +244,22 @@
         "22k": {
           "perGram": 13484,
           "per10g": 134840,
-          "change": 205
+          "change": 0
         },
         "24k": {
           "perGram": 14158,
           "per10g": 141580,
-          "change": -324
+          "change": 0
         },
         "18k": {
           "perGram": 11040,
           "per10g": 110404,
-          "change": 167
+          "change": 0
         },
         "silver": {
           "perGram": 269,
           "perKg": 269000,
-          "change": -6
+          "change": 0
         }
       },
       "monthlyTrend": {
