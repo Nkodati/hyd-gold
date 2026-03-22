@@ -10,8 +10,6 @@ from bs4 import BeautifulSoup
 
 IST_OFFSET_MINUTES = 5 * 60 + 30
 REQUEST_TIMEOUT_SECONDS = 25
-IBJA_URL = "https://ibjarates.com/index.aspx"
-
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -21,14 +19,26 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-IN,en;q=0.9",
     "Cache-Control": "no-cache",
+    "Referer": "https://groww.in/",
 }
 
-# City premiums over IBJA 22K benchmark (per gram)
 CITY_CONFIG = {
-    "chennai":   { "name": "Chennai",   "premium": 170 },
-    "hyderabad": { "name": "Hyderabad", "premium": 0   },
-    "bangalore": { "name": "Bangalore", "premium": 60  },
-    "ahmedabad": { "name": "Ahmedabad", "premium": 30  },
+    "chennai": {
+        "name": "Chennai",
+        "url": "https://groww.in/gold-rates/gold-rate-today-in-chennai",
+    },
+    "hyderabad": {
+        "name": "Hyderabad",
+        "url": "https://groww.in/gold-rates/gold-rate-today-in-hyderabad",
+    },
+    "bangalore": {
+        "name": "Bangalore",
+        "url": "https://groww.in/gold-rates/gold-rate-today-in-bangalore",
+    },
+    "ahmedabad": {
+        "name": "Ahmedabad",
+        "url": "https://groww.in/gold-rates/gold-rate-today-in-ahmedabad",
+    },
 }
 
 
@@ -36,11 +46,6 @@ def now_ist() -> datetime:
     from datetime import timezone, timedelta
     ist = timezone(timedelta(minutes=IST_OFFSET_MINUTES))
     return datetime.now(ist)
-
-
-def is_weekend() -> bool:
-    """IBJA does not publish on Saturday (5) or Sunday (6)."""
-    return now_ist().weekday() >= 5
 
 
 def load_existing(path: Path) -> Dict[str, Any]:
@@ -52,113 +57,73 @@ def load_existing(path: Path) -> Dict[str, Any]:
         return {}
 
 
-def fetch_ibja() -> Optional[Dict[str, float]]:
-    """
-    Fetch IBJA rates page and extract purity rates from h3 tags.
-    IBJA shows rates like:
-      999 Purity  → h3: "14722 (1 Gram)"   ← 24K
-      916 Purity  → h3: "13485 (1 Gram)"   ← 22K
-      750 Purity  → h3: "11041 (1 Gram)"   ← 18K
-      Silver 999  → historical table, per 10g
-    """
+def parse_inr(text: str) -> Optional[float]:
+    cleaned = re.sub(r"[₹,\s]", "", text)
     try:
-        resp = requests.get(IBJA_URL, headers=HEADERS, timeout=REQUEST_TIMEOUT_SECONDS)
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
+def scrape_groww_city(url: str, city_name: str) -> Optional[Dict[str, float]]:
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT_SECONDS)
         resp.raise_for_status()
     except Exception as e:
-        print(f"ERROR: Could not fetch IBJA page: {e}", file=sys.stderr)
+        print(f"  ERROR fetching {city_name}: {e}")
         return None
 
     soup = BeautifulSoup(resp.text, "lxml")
+    rates: Dict[str, float] = {}
+    found_prices = []
 
-    # Extract purity rates from h3 tags — format: "14722 (1 Gram)"
-    purity_rates: Dict[str, float] = {}
-    purity_map = {"999": "24k", "995": None, "916": "22k", "750": "18k", "585": None}
+    # Primary: find exactly "1 Gram" rows in tables
+    # Filter price to 1000–50000 to exclude per-10g values
+    for table in soup.find_all("table"):
+        for row in table.find_all("tr"):
+            cells = [td.get_text(strip=True) for td in row.find_all("td")]
+            if not cells:
+                continue
+            if cells[0].strip().lower() == "1 gram" and len(cells) >= 2:
+                price = parse_inr(cells[1])
+                if price and 1000 < price < 50000:
+                    found_prices.append(price)
 
-    # Find all purity headings and their associated h3 rate values
-    page_text = soup.get_text(" ", strip=True)
+    # Fallback: regex on full page text
+    if len(found_prices) < 2:
+        page_text = soup.get_text(" ", strip=True)
+        matches = re.findall(r"1\s*Gram\s*₹\s*([\d,]+\.?\d*)", page_text)
+        for m in matches:
+            p = parse_inr(m)
+            if p and 1000 < p < 50000:
+                found_prices.append(p)
 
-    for purity, karat_key in purity_map.items():
-        if karat_key is None:
-            continue
-        # Match pattern like "13485 (1 Gram)" near purity text
-        pattern = rf"{purity}\s*Purity[\s\S]{{0,100}}?(\d{{4,6}})\s*\(1\s*Gram\)"
-        m = re.search(pattern, page_text, re.IGNORECASE)
-        if m:
-            purity_rates[karat_key] = float(m.group(1))
-            print(f"  IBJA {purity} ({karat_key}): ₹{m.group(1)}/g")
+    # Deduplicate
+    found_prices = list(dict.fromkeys(found_prices))
 
-    # If regex on full text fails, try h3 tags directly
-    if len(purity_rates) < 2:
-        purity_rates = {}
-        h3_tags = soup.find_all("h3")
-        rate_values = []
-        for h3 in h3_tags:
-            m = re.search(r"(\d{4,6})\s*\(1\s*Gram\)", h3.get_text())
-            if m:
-                rate_values.append(float(m.group(1)))
+    if len(found_prices) >= 2:
+        found_prices_sorted = sorted(found_prices, reverse=True)
+        rates["24k"] = found_prices_sorted[0]
+        rates["22k"] = found_prices_sorted[1]
+    elif len(found_prices) == 1:
+        rates["24k"] = found_prices[0]
+        rates["22k"] = round((found_prices[0] / 999) * 916, 2)
 
-        # IBJA shows in order: 999, 995, 916, 750, 585
-        karat_order = ["24k", None, "22k", "18k", None]
-        for i, karat in enumerate(karat_order):
-            if karat and i < len(rate_values):
-                purity_rates[karat] = rate_values[i]
-                print(f"  IBJA fallback {karat}: ₹{rate_values[i]}/g")
-
-    if "22k" not in purity_rates or "24k" not in purity_rates:
-        print("ERROR: Could not extract 22K/24K rates from IBJA.", file=sys.stderr)
+    if "22k" not in rates or "24k" not in rates:
+        print(f"  ERROR: Could not extract rates for {city_name}")
         return None
 
-    # Extract silver from historical table — "Silver 999" column, per 10g
-    silver_per_gram = None
-    tables = soup.find_all("table")
-    for table in tables:
-        headers = [th.get_text(strip=True).lower() for th in table.find_all("th")]
-        if not any("silver" in h for h in headers):
-            continue
-        # Find silver column index
-        silver_idx = next((i for i, h in enumerate(headers) if "silver" in h), None)
-        if silver_idx is None:
-            continue
-        # Get first data row
-        rows = table.find_all("tr")
-        for row in rows:
-            cells = [td.get_text(strip=True) for td in row.find_all("td")]
-            if len(cells) > silver_idx:
-                raw = cells[silver_idx].replace(",", "")
-                m = re.search(r"(\d{4,7})", raw)
-                if m:
-                    # Silver is per 10g in IBJA table — divide by 10
-                    silver_per_gram = float(m.group(1)) / 10.0
-                    print(f"  IBJA Silver: ₹{silver_per_gram}/g")
-                    break
-        if silver_per_gram:
-            break
+    # Derive 18K from 22K using purity ratio
+    rates["18k"] = round((rates["22k"] / 916) * 750, 2)
 
-    # Fallback silver: ~1.9% of 24K per gram
-    if not silver_per_gram:
-        silver_per_gram = purity_rates["24k"] * 0.019
-        print(f"  Silver fallback (derived): ₹{silver_per_gram:.0f}/g")
+    # Derive silver (~1.9% of 24K per gram)
+    rates["silver"] = round(rates["24k"] * 0.019, 2)
 
-    purity_rates["silver"] = silver_per_gram
-    return purity_rates
-
-
-def apply_city_premium(ibja_rates: Dict[str, float], premium: int) -> Dict[str, float]:
-    """
-    Apply city premium to 22K and derive other karats proportionally.
-    24K = (22K + premium) / 916 * 999
-    18K = (22K + premium) / 916 * 750
-    """
-    base_22k = ibja_rates["22k"] + premium
-    base_24k = (base_22k / 916) * 999
-    base_18k = (base_22k / 916) * 750
-
-    return {
-        "22k": round(base_22k, 2),
-        "24k": round(base_24k, 2),
-        "18k": round(base_18k, 2),
-        "silver": round(ibja_rates["silver"], 2),
-    }
+    print(f"  {city_name}: 22K=₹{rates['22k']:.0f}  "
+          f"24K=₹{rates['24k']:.0f}  "
+          f"18K=₹{rates['18k']:.0f}  "
+          f"Silver=₹{rates['silver']:.2f}")
+    return rates
 
 
 def old_pg(old_rates: Dict[str, Any], key: str) -> Optional[float]:
@@ -247,24 +212,20 @@ def main() -> int:
     date_label = ist_now.strftime("%b %d")
     last_updated = ist_now.isoformat()
 
-    # IBJA does not publish on weekends — keep existing rates, exit cleanly
-    if is_weekend():
-        print(f"Today is a weekend. IBJA does not publish rates. Keeping existing rates.")
-        return 0
-
-    print("Fetching IBJA rates...")
-    ibja_rates = fetch_ibja()
-
-    if ibja_rates is None:
-        print("ERROR: Could not fetch IBJA rates.", file=sys.stderr)
-        return 1
-
     existing_cities = existing.get("cities", {})
     new_cities: Dict[str, Any] = {}
+    failed: List[str] = []
 
     for city_key, config in CITY_CONFIG.items():
-        print(f"\nBuilding {config['name']} rates (premium: +₹{config['premium']}/g)...")
-        per_gram = apply_city_premium(ibja_rates, config["premium"])
+        print(f"\nScraping {config['name']} from Groww...")
+        per_gram = scrape_groww_city(config["url"], config["name"])
+
+        if per_gram is None:
+            print(f"  FAILED: Keeping existing rates for {config['name']}")
+            failed.append(config["name"])
+            if city_key in existing_cities:
+                new_cities[city_key] = existing_cities[city_key]
+            continue
 
         old_rates = existing_cities.get(city_key, {}).get("rates", {})
         existing_trend = existing_cities.get(city_key, {}).get("monthlyTrend", {})
@@ -273,11 +234,9 @@ def main() -> int:
             per_gram, old_rates, existing_trend, date_label, config["name"]
         )
 
-        r = new_cities[city_key]["rates"]
-        print(f"  22K: ₹{r['22k']['perGram']}/g  "
-              f"24K: ₹{r['24k']['perGram']}/g  "
-              f"18K: ₹{r['18k']['perGram']}/g  "
-              f"Silver: ₹{r['silver']['perGram']}/g")
+    if not new_cities:
+        print("\nERROR: All cities failed.", file=sys.stderr)
+        return 1
 
     payload = {
         "lastUpdated": last_updated,
@@ -285,7 +244,7 @@ def main() -> int:
     }
 
     rates_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    print(f"\nrates.json updated successfully at {last_updated}")
+    print(f"\nrates.json updated successfully. Failed: {failed if failed else 'none'}")
     return 0
 
 
