@@ -129,3 +129,187 @@ body {
 
 /* Chart tooltip override */
 .recharts-tooltip-wrapper { outline: none; }
+
+/* —— Site chrome & static pages (GoldRateIndia.live) —— */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(8, 8, 8, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-inner {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 16px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.nav-logo-india {
+  color: rgba(245, 240, 232, 0.4);
+  font-weight: 400;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: rgba(245, 240, 232, 0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: rgba(245, 240, 232, 0.9);
+}
+
+.city-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: rgba(245, 240, 232, 0.45);
+  background: transparent;
+}
+
+.city-btn.active {
+  background: rgba(255, 193, 7, 0.1);
+  border-color: rgba(255, 193, 7, 0.4);
+  color: #FFD14D;
+}
+
+.city-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.content-section {
+  background: #161616;
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 24px;
+  line-height: 1.8;
+  font-size: 14px;
+  color: rgba(245, 240, 232, 0.6);
+}
+
+.content-section h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(245, 240, 232, 0.9);
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+
+.content-section p {
+  margin-bottom: 12px;
+}
+
+.content-section p:last-child {
+  margin-bottom: 0;
+}
+
+.site-footer {
+  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+  margin-top: 48px;
+  padding: 24px 16px;
+}
+
+.footer-inner {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+@media (min-width: 640px) {
+  .footer-inner {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(245, 240, 232, 0.3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: rgba(245, 240, 232, 0.7);
+}
+
+.static-page {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 40px 16px 80px;
+}
+
+.static-page h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.static-page h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(245, 240, 232, 0.85);
+  margin: 28px 0 10px;
+}
+
+.static-page p,
+.static-page li {
+  font-size: 14px;
+  color: rgba(245, 240, 232, 0.55);
+  line-height: 1.8;
+}
+
+.static-page a {
+  color: #FFD14D;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.static-page a:hover {
+  color: #ffe08a;
+}
+
+.divider-line {
+  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+  margin: 32px 0;
+}
