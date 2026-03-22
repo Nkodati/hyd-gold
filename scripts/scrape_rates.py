@@ -8,19 +8,6 @@ import requests
 from bs4 import BeautifulSoup
 
 
-GOODRETURNS_URLS = [
-    "https://www.goodreturns.in/gold-rates/hyderabad.html",
-    "https://www.goodreturns.in/gold-rates//hyderabad.html",
-]
-BANKBAZAAR_URLS = [
-    "https://msn.bankbazaar.com/gold-rate-hyderabad.html",
-    "https://www.bankbazaar.com/gold-rate/hyderabad.html",
-    "https://www.bankbazaar.com/gold-rate-telangana.html",
-]
-POLICYBAZAAR_URLS = [
-    "https://www.policybazaar.com/gold-rate/hyderabad/",
-]
-
 IST_OFFSET_MINUTES = 5 * 60 + 30
 REQUEST_TIMEOUT_SECONDS = 25
 HEADERS = {
@@ -34,7 +21,39 @@ HEADERS = {
     "Cache-Control": "no-cache",
     "Pragma": "no-cache",
 }
-FETCH_LOG: List[str] = []
+
+# City config — name, and ordered list of URLs to try
+CITIES = {
+    "chennai": {
+        "name": "Chennai",
+        "urls": [
+            "https://www.goodreturns.in/gold-rates/chennai.html",
+            "https://www.bankbazaar.com/gold-rate/chennai.html",
+        ],
+    },
+    "hyderabad": {
+        "name": "Hyderabad",
+        "urls": [
+            "https://www.goodreturns.in/gold-rates/hyderabad.html",
+            "https://www.bankbazaar.com/gold-rate/hyderabad.html",
+            "https://www.bankbazaar.com/gold-rate-telangana.html",
+        ],
+    },
+    "bangalore": {
+        "name": "Bangalore",
+        "urls": [
+            "https://www.goodreturns.in/gold-rates/bangalore.html",
+            "https://www.bankbazaar.com/gold-rate/bangalore.html",
+        ],
+    },
+    "ahmedabad": {
+        "name": "Ahmedabad",
+        "urls": [
+            "https://www.goodreturns.in/gold-rates/ahmedabad.html",
+            "https://www.bankbazaar.com/gold-rate/ahmedabad.html",
+        ],
+    },
+}
 
 
 def now_ist() -> datetime:
@@ -43,7 +62,7 @@ def now_ist() -> datetime:
     return datetime.now(ist)
 
 
-def load_existing_rates(path: Path) -> Dict[str, Any]:
+def load_existing(path: Path) -> Dict[str, Any]:
     if not path.exists():
         return {}
     try:
@@ -58,30 +77,25 @@ def parse_price(text: str) -> Optional[float]:
     matches = re.findall(r"(\d+(?:\.\d+)?)", cleaned)
     if not matches:
         return None
-    values: List[float] = []
+    values = []
     for token in matches:
         try:
             values.append(float(token))
         except ValueError:
             continue
-    if not values:
-        return None
     plausible = [v for v in values if v >= 1000]
-    if plausible:
-        return max(plausible)
-    return None
+    return max(plausible) if plausible else None
 
 
 def fetch_url(url: str) -> Optional[str]:
     for attempt in range(1, 4):
         try:
             resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT_SECONDS)
-            FETCH_LOG.append(f"{url} -> {resp.status_code} (attempt {attempt})")
             if resp.text:
+                print(f"  {url} -> {resp.status_code} (attempt {attempt})")
                 return resp.text
         except Exception as e:
-            FETCH_LOG.append(f"{url} -> request_error: {e} (attempt {attempt})")
-            continue
+            print(f"  {url} -> error: {e} (attempt {attempt})")
     return None
 
 
@@ -115,162 +129,53 @@ def extract_rates_from_text(text: str) -> Dict[str, float]:
     return out
 
 
-def parse_one_gram_today_from_table_text(table_text: str) -> Optional[float]:
-    import re
-    compact = " ".join(table_text.replace(",", "").split())
-    m = re.search(r"1\s*gram\s*₹?\s*([0-9]+(?:\.[0-9]+)?)", compact, flags=re.IGNORECASE)
-    if not m:
-        return None
-    try:
-        return float(m.group(1))
-    except ValueError:
-        return None
-
-
-def scrape_goodreturns() -> Optional[Dict[str, float]]:
-    html = None
-    for url in GOODRETURNS_URLS:
+def scrape_city(urls: List[str]) -> Optional[Dict[str, float]]:
+    """Try each URL until we get valid 22k + 24k rates."""
+    for url in urls:
         html = fetch_url(url)
-        if html:
-            break
-    if not html:
-        return None
-    soup = BeautifulSoup(html, "lxml")
-    rates: Dict[str, float] = {}
-    for table in soup.find_all("table"):
-        table_text = table.get_text(" ", strip=True).lower()
-        if "carat" not in table_text and "karat" not in table_text and "22k" not in table_text:
+        if not html:
             continue
-        for row in table.find_all("tr"):
-            cells = [c.get_text(strip=True) for c in row.find_all(["td", "th"])]
-            if not cells:
-                continue
-            label = cells[0].lower()
-            if ("22" in label and "carat" in label) or "22k" in label:
-                price = parse_price(" ".join(cells[1:]))
-                if price:
-                    rates["22k"] = price
-            elif ("24" in label and "carat" in label) or "24k" in label:
-                price = parse_price(" ".join(cells[1:]))
-                if price:
-                    rates["24k"] = price
-            elif ("18" in label and "carat" in label) or "18k" in label:
-                price = parse_price(" ".join(cells[1:]))
-                if price:
-                    rates["18k"] = price
-    if "22k" not in rates or "24k" not in rates:
-        rates.update(extract_rates_from_text(soup.get_text(" ", strip=True)))
-    return rates or None
+        soup = BeautifulSoup(html, "lxml")
+        rates: Dict[str, float] = {}
 
-
-def scrape_bankbazaar() -> Optional[Dict[str, float]]:
-    html = None
-    for url in BANKBAZAAR_URLS:
-        html = fetch_url(url)
-        if html:
-            break
-    if not html:
-        return None
-    soup = BeautifulSoup(html, "lxml")
-    rates: Dict[str, float] = {}
-    summary_tables: List[str] = []
-    for table in soup.find_all("table"):
-        txt = table.get_text(" ", strip=True)
-        if "Gram" in txt and "Today" in txt and "Yesterday" in txt:
-            summary_tables.append(txt)
-    if len(summary_tables) >= 2:
-        p22 = parse_one_gram_today_from_table_text(summary_tables[0])
-        p24 = parse_one_gram_today_from_table_text(summary_tables[1])
-        if p22:
-            rates["22k"] = p22
-        if p24:
-            rates["24k"] = p24
-    for table in soup.find_all("table"):
-        table_text = table.get_text(" ", strip=True).lower()
-        if "karat" not in table_text and "carat" not in table_text and "22k" not in table_text:
-            continue
-        for row in table.find_all("tr"):
-            cells = [c.get_text(strip=True) for c in row.find_all(["td", "th"])]
-            if not cells:
-                continue
-            label = cells[0].lower()
-            if ("22" in label and ("karat" in label or "carat" in label)) or "22k" in label:
-                price = parse_price(" ".join(cells[1:]))
-                if price:
-                    rates["22k"] = price
-            elif ("24" in label and ("karat" in label or "carat" in label)) or "24k" in label:
-                price = parse_price(" ".join(cells[1:]))
-                if price:
-                    rates["24k"] = price
-            elif ("18" in label and ("karat" in label or "carat" in label)) or "18k" in label:
-                price = parse_price(" ".join(cells[1:]))
-                if price:
-                    rates["18k"] = price
-    if "22k" not in rates or "24k" not in rates:
-        rates.update(extract_rates_from_text(soup.get_text(" ", strip=True)))
-    return rates or None
-
-
-def scrape_policybazaar() -> Optional[Dict[str, float]]:
-    html = None
-    for url in POLICYBAZAAR_URLS:
-        html = fetch_url(url)
-        if html:
-            break
-    if not html:
-        return None
-    soup = BeautifulSoup(html, "lxml")
-    rates = extract_rates_from_text(soup.get_text(" ", strip=True))
-    if "22k" not in rates or "24k" not in rates:
         for table in soup.find_all("table"):
-            txt = table.get_text(" ", strip=True).lower()
-            if "22" not in txt and "24" not in txt:
+            table_text = table.get_text(" ", strip=True).lower()
+            if "carat" not in table_text and "karat" not in table_text and "22k" not in table_text:
                 continue
             for row in table.find_all("tr"):
-                cells = [c.get_text(" ", strip=True) for c in row.find_all(["td", "th"])]
+                cells = [c.get_text(strip=True) for c in row.find_all(["td", "th"])]
                 if not cells:
                     continue
                 label = cells[0].lower()
-                value = parse_price(" ".join(cells[1:]))
-                if not value:
-                    continue
-                if "22" in label and ("k" in label or "carat" in label or "karat" in label):
-                    rates["22k"] = value
-                if "24" in label and ("k" in label or "carat" in label or "karat" in label):
-                    rates["24k"] = value
-                if "18" in label and ("k" in label or "carat" in label or "karat" in label):
-                    rates["18k"] = value
-    if "22k" in rates and "24k" in rates:
-        return rates
+                if ("22" in label and ("carat" in label or "karat" in label)) or "22k" in label:
+                    price = parse_price(" ".join(cells[1:]))
+                    if price:
+                        rates["22k"] = price
+                elif ("24" in label and ("carat" in label or "karat" in label)) or "24k" in label:
+                    price = parse_price(" ".join(cells[1:]))
+                    if price:
+                        rates["24k"] = price
+                elif ("18" in label and ("carat" in label or "karat" in label)) or "18k" in label:
+                    price = parse_price(" ".join(cells[1:]))
+                    if price:
+                        rates["18k"] = price
+
+        # Fallback to full text regex if table parsing missed keys
+        if "22k" not in rates or "24k" not in rates:
+            rates.update(extract_rates_from_text(soup.get_text(" ", strip=True)))
+
+        if "22k" in rates and "24k" in rates:
+            return rates
+
     return None
 
 
-def normalize_to_per_gram(raw_rates: Dict[str, float]) -> Dict[str, float]:
-    normalized = {}
-    for key, value in raw_rates.items():
-        if value >= 50000:
-            normalized[key] = value / 10.0
-        else:
-            normalized[key] = value
-    return normalized
+def normalize(raw: Dict[str, float]) -> Dict[str, float]:
+    """Convert per-10g values to per-gram if needed."""
+    return {k: v / 10.0 if v >= 50000 else v for k, v in raw.items()}
 
 
-def merge_with_existing_if_partial(raw_rates: Dict[str, float], existing: Dict[str, Any]) -> Dict[str, float]:
-    merged = dict(raw_rates)
-    old_rates = (existing or {}).get("rates") or {}
-    for key in ("22k", "24k"):
-        if key in merged:
-            continue
-        try:
-            old_value = old_rates.get(key, {}).get("perGram")
-            if old_value and float(old_value) > 0:
-                merged[key] = float(old_value)
-        except Exception:
-            continue
-    return merged
-
-
-def derive_missing_and_silver(per_gram: Dict[str, float]) -> Dict[str, float]:
+def derive(per_gram: Dict[str, float]) -> Dict[str, float]:
     result = dict(per_gram)
     if "22k" in result and "18k" not in result:
         result["18k"] = (result["22k"] / 22.0) * 18.0
@@ -279,107 +184,97 @@ def derive_missing_and_silver(per_gram: Dict[str, float]) -> Dict[str, float]:
     return result
 
 
-def enforce_price_sanity(per_gram: Dict[str, float], existing: Dict[str, Any]) -> Dict[str, float]:
+def enforce_sanity(per_gram: Dict[str, float], old_rates: Dict[str, Any]) -> Dict[str, float]:
     safe = dict(per_gram)
-    old_rates = (existing or {}).get("rates") or {}
     for key in ("22k", "24k", "18k"):
         value = safe.get(key)
-        if value is None:
-            continue
-        if value >= 1000:
-            continue
-        try:
-            fallback = old_rates.get(key, {}).get("perGram")
-            if fallback and float(fallback) >= 1000:
-                safe[key] = float(fallback)
-                print(f"WARNING: Suspicious value {value} for {key}, using existing {fallback}")
-        except Exception:
-            pass
+        if value is not None and value < 1000:
+            try:
+                fallback = float(old_rates.get(key, {}).get("perGram", 0))
+                if fallback >= 1000:
+                    safe[key] = fallback
+                    print(f"  WARNING: Suspicious {key}={value}, using existing {fallback}")
+            except Exception:
+                pass
     return safe
 
 
-def old_per_gram(existing: Dict[str, Any], key: str) -> Optional[float]:
-    """Safely retrieve previous per-gram price. Returns None on first run."""
+def old_pg(old_rates: Dict[str, Any], key: str) -> Optional[float]:
     try:
-        value = existing.get("rates", {}).get(key, {}).get("perGram")
-        if value is not None:
-            return float(value)
+        v = old_rates.get(key, {}).get("perGram")
+        return float(v) if v is not None else None
     except Exception:
-        pass
-    return None
+        return None
 
 
-def compute_change(new_price: float, old_price: Optional[float]) -> int:
-    if old_price is None:
-        return 0
-    return int(round(new_price - old_price))
+def compute_change(new: float, old: Optional[float]) -> int:
+    return int(round(new - old)) if old is not None else 0
 
 
-def update_monthly_trend(
-    existing: Dict[str, Any],
+def update_trend(
+    existing_trend: Dict[str, Any],
     date_label: str,
     per_gram: Dict[str, float],
     max_points: int = 30,
 ) -> Dict[str, Any]:
-    trend = existing.get("monthlyTrend") or {}
-    labels: List[str] = list(trend.get("labels") or [])
-    arr_22: List[float] = list(trend.get("22k") or [])
-    arr_24: List[float] = list(trend.get("24k") or [])
-    arr_18: List[float] = list(trend.get("18k") or [])
+    labels: List[str] = list(existing_trend.get("labels") or [])
+    arr_22: List[float] = list(existing_trend.get("22k") or [])
+    arr_24: List[float] = list(existing_trend.get("24k") or [])
+    arr_18: List[float] = list(existing_trend.get("18k") or [])
 
+    # Replace today's entry if re-running same day
     if labels and labels[-1] == date_label:
-        labels.pop(); arr_22.pop() if arr_22 else None
-        arr_24.pop() if arr_24 else None; arr_18.pop() if arr_18 else None
+        labels.pop()
+        if arr_22: arr_22.pop()
+        if arr_24: arr_24.pop()
+        if arr_18: arr_18.pop()
 
     labels.append(date_label)
     arr_22.append(round(per_gram.get("22k", 0)))
     arr_24.append(round(per_gram.get("24k", 0)))
     arr_18.append(round(per_gram.get("18k", 0)))
 
-    if len(labels) > max_points:
-        labels = labels[-max_points:]
-        arr_22 = arr_22[-max_points:]
-        arr_24 = arr_24[-max_points:]
-        arr_18 = arr_18[-max_points:]
+    return {
+        "labels": labels[-max_points:],
+        "22k": arr_22[-max_points:],
+        "24k": arr_24[-max_points:],
+        "18k": arr_18[-max_points:],
+    }
 
-    return {"labels": labels, "22k": arr_22, "24k": arr_24, "18k": arr_18}
 
-
-def build_payload(existing: Dict[str, Any], per_gram: Dict[str, float]) -> Dict[str, Any]:
-    ist_now = now_ist()
-    last_updated = ist_now.isoformat()
-    date_label = ist_now.strftime("%b %d")
-
+def build_city_block(
+    per_gram: Dict[str, float],
+    old_rates: Dict[str, Any],
+    existing_trend: Dict[str, Any],
+    date_label: str,
+    city_name: str,
+) -> Dict[str, Any]:
     rates_block = {
         "22k": {
             "perGram": int(round(per_gram["22k"])),
             "per10g": int(round(per_gram["22k"] * 10)),
-            "change": compute_change(per_gram["22k"], old_per_gram(existing, "22k")),
+            "change": compute_change(per_gram["22k"], old_pg(old_rates, "22k")),
         },
         "24k": {
             "perGram": int(round(per_gram["24k"])),
             "per10g": int(round(per_gram["24k"] * 10)),
-            "change": compute_change(per_gram["24k"], old_per_gram(existing, "24k")),
+            "change": compute_change(per_gram["24k"], old_pg(old_rates, "24k")),
         },
         "18k": {
             "perGram": int(round(per_gram["18k"])),
             "per10g": int(round(per_gram["18k"] * 10)),
-            "change": compute_change(per_gram["18k"], old_per_gram(existing, "18k")),
+            "change": compute_change(per_gram["18k"], old_pg(old_rates, "18k")),
         },
         "silver": {
             "perGram": int(round(per_gram.get("silver", 0))),
             "perKg": int(round(per_gram.get("silver", 0) * 1000)),
-            "change": compute_change(per_gram.get("silver", 0), old_per_gram(existing, "silver")),
+            "change": compute_change(per_gram.get("silver", 0), old_pg(old_rates, "silver")),
         },
     }
-
-    monthly_trend = update_monthly_trend(existing or {}, date_label, per_gram)
-
     return {
-        "lastUpdated": last_updated,
-        "city": "Hyderabad",
+        "name": city_name,
         "rates": rates_block,
-        "monthlyTrend": monthly_trend,
+        "monthlyTrend": update_trend(existing_trend, date_label, per_gram),
     }
 
 
@@ -387,44 +282,61 @@ def main() -> int:
     project_root = Path(__file__).resolve().parents[1]
     rates_path = project_root / "public" / "rates.json"
 
-    existing = load_existing_rates(rates_path)
+    existing = load_existing(rates_path)
+    existing_cities = existing.get("cities", {})
 
-    print("Attempting GoodReturns...")
-    raw = scrape_goodreturns()
-    if raw is None:
-        print("GoodReturns failed. Trying BankBazaar...")
-        raw = scrape_bankbazaar()
-    if raw is None:
-        print("BankBazaar failed. Trying PolicyBazaar...")
-        raw = scrape_policybazaar()
-    if raw is None:
-        print("ERROR: All sources failed.", file=sys.stderr)
-        for line in FETCH_LOG:
-            print(f"  {line}", file=sys.stderr)
+    ist_now = now_ist()
+    date_label = ist_now.strftime("%b %d")
+    last_updated = ist_now.isoformat()
+
+    new_cities: Dict[str, Any] = {}
+    failed: List[str] = []
+
+    for city_key, city_config in CITIES.items():
+        city_name = city_config["name"]
+        print(f"\nScraping {city_name}...")
+
+        raw = scrape_city(city_config["urls"])
+        if raw is None:
+            print(f"  FAILED: Could not scrape {city_name}, keeping existing rates.")
+            failed.append(city_name)
+            # Keep existing data if scrape fails
+            if city_key in existing_cities:
+                new_cities[city_key] = existing_cities[city_key]
+            continue
+
+        per_gram = normalize(raw)
+        per_gram = derive(per_gram)
+
+        old_rates = existing_cities.get(city_key, {}).get("rates", {})
+        per_gram = enforce_sanity(per_gram, old_rates)
+
+        if not all(k in per_gram for k in ("22k", "24k", "18k", "silver")):
+            print(f"  FAILED: Missing keys for {city_name} after processing.")
+            failed.append(city_name)
+            if city_key in existing_cities:
+                new_cities[city_key] = existing_cities[city_key]
+            continue
+
+        existing_trend = existing_cities.get(city_key, {}).get("monthlyTrend", {})
+        new_cities[city_key] = build_city_block(
+            per_gram, old_rates, existing_trend, date_label, city_name
+        )
+
+        r = new_cities[city_key]["rates"]
+        print(f"  22K: ₹{r['22k']['perGram']}/g  24K: ₹{r['24k']['perGram']}/g  18K: ₹{r['18k']['perGram']}/g")
+
+    if not new_cities:
+        print("\nERROR: All cities failed.", file=sys.stderr)
         return 1
 
-    raw = merge_with_existing_if_partial(raw, existing)
-    per_gram = normalize_to_per_gram(raw)
-    per_gram = derive_missing_and_silver(per_gram)
-    per_gram = enforce_price_sanity(per_gram, existing)
-
-    if not all(k in per_gram for k in ("22k", "24k", "18k", "silver")):
-        print("ERROR: Missing required rates after processing.", file=sys.stderr)
-        return 1
-
-    payload = build_payload(existing, per_gram)
-
-    if existing == payload:
-        print("No changes detected. Skipping update.")
-        return 0
+    payload = {
+        "lastUpdated": last_updated,
+        "cities": new_cities,
+    }
 
     rates_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    r = payload["rates"]
-    print(f"rates.json updated successfully.")
-    print(f"  22K: ₹{r['22k']['perGram']}/g  (change: {r['22k']['change']:+d})")
-    print(f"  24K: ₹{r['24k']['perGram']}/g  (change: {r['24k']['change']:+d})")
-    print(f"  18K: ₹{r['18k']['perGram']}/g  (change: {r['18k']['change']:+d})")
-    print(f"  Silver: ₹{r['silver']['perGram']}/g  (change: {r['silver']['change']:+d})")
+    print(f"\nrates.json updated. Failed cities: {failed if failed else 'none'}")
     return 0
 
 
