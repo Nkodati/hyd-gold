@@ -1,20 +1,23 @@
-name: Update Gold Rates
+name: Update gold rates
 
 on:
   schedule:
-    # 2:30 AM UTC = 8:00 AM IST
+    # Runs at 8:00 AM IST = 2:30 AM UTC every day
     - cron: "30 2 * * *"
   workflow_dispatch:
+    # Allows manual trigger from GitHub Actions tab
 
+# Required so GITHUB_TOKEN can commit + push public/rates.json
 permissions:
   contents: write
 
 jobs:
-  update-rates:
+  scrape-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -23,44 +26,47 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: scripts/requirements.txt
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r scripts/requirements.txt
+      - name: Install scraper dependencies
+        run: pip install -r scripts/requirements.txt
 
       - name: Run scraper
-        run: python scripts/scrape_rates.py
-
-      - name: Check for changes
-        id: git_status
+        id: scraper
         run: |
-          if git diff --quiet -- public/rates.json; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
+          python scripts/scrape_rates.py
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
 
-      - name: Commit and push updated rates
-        if: steps.git_status.outputs.changed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Warn if scraper failed
+        if: failure()
+        run: echo "Scraper failed — rates.json was NOT updated. Previous rates remain live."
+
+      - name: Check if rates.json changed
+        id: check_changes
         run: |
-          DATE_STR=$(date -u +"%d %b %Y")
+          git diff --quiet public/rates.json && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit updated rates
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/rates.json
-          git commit -m "chore: update gold rates ${DATE_STR}"
+          git commit -m "chore: update gold rates $(date +'%d %b %Y')"
           git push
 
-      - name: Trigger Vercel deploy
-        if: steps.git_status.outputs.changed == 'true'
+      - name: Trigger Vercel redeploy
+        if: steps.check_changes.outputs.changed == 'true'
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
         run: |
           if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
-            echo "VERCEL_DEPLOY_HOOK is not set; skipping deploy hook call."
+            echo "VERCEL_DEPLOY_HOOK not set; skipping deploy hook."
             exit 0
           fi
-          curl -X POST "$VERCEL_DEPLOY_HOOK"
+          curl --fail -X POST "$VERCEL_DEPLOY_HOOK"
 
+      - name: Skip deploy — no rate changes
+        if: steps.check_changes.outputs.changed == 'false'
+        run: echo "Rates unchanged since last run. Skipping Vercel redeploy."
