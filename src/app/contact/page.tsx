@@ -18,7 +18,7 @@ export default function ContactPage() {
         <h2>Email</h2>
         <p>
           General enquiries:{' '}
-          <a href="mailto:hello@goldrateindia.live">hello@goldrateindia.live</a>
+          <a href="mailto:goldratesindia4@gamil.com">goldratesindia4@gamil.com</a>
         </p>
 
         <h2>Rate Corrections</h2>
@@ -32,7 +32,7 @@ export default function ContactPage() {
         <p>
           Brands offering jewellery, gold investment products, bullion services, or related financial education may advertise
           with us subject to suitability and compliance review. Write to{' '}
-          <a href="mailto:hello@goldrateindia.live">hello@goldrateindia.live</a> with &quot;Advertising&quot; in the subject line,
+          <a href="mailto:goldratesindia4@gamil.com">goldratesindia4@gamil.com</a> with &quot;Advertising&quot; in the subject line,
           your company name, campaign goals, and preferred placement (display, sponsored content outline, or newsletter—if
           available). We do not endorse advertisers; ads are labelled in line with network policies.
         </p>
