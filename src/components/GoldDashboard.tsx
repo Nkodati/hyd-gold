@@ -25,6 +25,7 @@ export interface CityRatesBlock {
 
 export interface GoldRatesData {
   lastUpdated: string
+  marketUpdate: string
   cities: Record<CityKey, CityRatesBlock>
 }
 
@@ -46,6 +47,10 @@ export default function GoldDashboard({ data }: { data: GoldRatesData }) {
     year: 'numeric',
     timeZone: 'Asia/Kolkata',
   })
+  const marketCommentary = data.marketUpdate
+    .split(/(?<=[.!?])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean)
 
   return (
     <div className="noise-bg grid-bg min-h-screen relative">
@@ -76,6 +81,14 @@ export default function GoldDashboard({ data }: { data: GoldRatesData }) {
           <p className="text-xs sm:text-sm" style={{ color: 'var(--text-tertiary)' }}>
             {cityName} &nbsp;·&nbsp; {updatedDate} &nbsp;·&nbsp; Updated at {updatedAt} IST
           </p>
+        </div>
+
+        <div
+          className="content-section mb-6 sm:mb-8 fade-up"
+          style={{ animationDelay: '80ms', transform: 'translateY(20px)' }}
+        >
+          <h2 className="!mt-0">Gold Market Update — {updatedDate}</h2>
+          <p>{marketCommentary.join(' ')}</p>
         </div>
 
         <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2 sm:gap-3 mb-2 sm:mb-3">
@@ -123,22 +136,52 @@ export default function GoldDashboard({ data }: { data: GoldRatesData }) {
           className="content-section mt-8 sm:mt-10 fade-up"
           style={{ animationDelay: '500ms', transform: 'translateY(20px)' }}
         >
-          <h2 className="!mt-0">Understanding Gold Rates in {cityName}</h2>
+          <h2 className="!mt-0">Why gold rates vary by city</h2>
           <p>
-            In India, many jewellers and financial platforms reference benchmark bullion prices that align with Indian Bullion
-            and Jewellers Association (IBJA)–style indications. These figures help standardise how 22 karat, 24 karat, and 18
-            karat gold are quoted before local taxes, making charges, and stone weights are added at the counter.
+            Gold prices in Indian cities usually start from a common benchmark published by the Indian Bullion and Jewellers
+            Association, or IBJA. IBJA reference rates are widely used across the trade because they reflect wholesale bullion
+            pricing for different purities before retail-level additions are applied. That gives jewellers and buyers a base
+            number for 24K, 22K, and other purity levels on any given day.
           </p>
           <p>
-            Twenty-two karat gold is the alloy most commonly used for traditional jewellery; twenty-four karat is purer but
-            softer, so it is often priced higher per gram; eighteen karat contains a lower gold percentage and is popular for
-            lighter or fashion-forward pieces. The relationship is not arbitrary—purity directly affects both price per gram and
-            how durable the piece will be for daily wear.
+            From that base, city-level premiums can push the displayed rate slightly higher or lower. Retailers account for
+            freight, insurance, secure handling, and the cost of moving bullion into local markets. Transportation and logistics
+            may seem minor per gram, but across a supply chain they can affect the final quote, especially in markets that rely
+            on a constant inflow of inventory.
           </p>
           <p>
-            Domestic gold prices respond to international spot rates, currency movement (INR vs USD), import duties, seasonal
-            demand (festivals and weddings), and central bank policy. Because {cityName} sits within this national market,
-            local display rates typically track the same drivers while reflecting slight regional spreads.
+            Demand also matters. When wedding purchases, festive buying, or investment demand rise sharply in a city like
+            {cityName}, local dealers may adjust premiums depending on stock availability and replacement cost. That is why two
+            cities can track the same national trend yet still show small differences in daily gold rates.
+          </p>
+          <p>
+            The key takeaway for buyers is that the benchmark rate is only the starting point. Final shop prices can vary based
+            on purity, city premium, local competition, and inventory conditions on the day you buy.
+          </p>
+        </div>
+
+        <div
+          className="content-section mt-8 sm:mt-10 fade-up"
+          style={{ animationDelay: '580ms', transform: 'translateY(20px)' }}
+        >
+          <h2 className="!mt-0">Buying Guide</h2>
+          <p>
+            The best time to buy gold depends on your goal. If you are buying jewellery for an event, compare a few days of
+            price movement instead of chasing only intraday dips, and keep making charges in view because they often affect your
+            total bill more than a small daily fluctuation. If you are buying as an investment, consider staggered purchases so
+            you do not commit the full amount at one short-term peak.
+          </p>
+          <p>
+            For purity, 24K gold is closer to pure gold and is preferred for coins, bars, and some investment-oriented
+            purchases. Twenty-two karat is slightly less pure but stronger, which makes it the more practical choice for most
+            jewellery worn regularly. Choose 24K when purity matters most, and 22K when durability and design flexibility are
+            more important.
+          </p>
+          <p>
+            To verify purity, check for a BIS Hallmark, confirm the karat marking, and ask for a detailed invoice that clearly
+            separates gold value, wastage, making charges, and GST. Reputed jewellers should also explain weight deductions for
+            stones or non-gold components. If you are spending a meaningful amount, ask for a purity test or buyback policy
+            before payment so you know exactly what you are getting.
           </p>
         </div>
 

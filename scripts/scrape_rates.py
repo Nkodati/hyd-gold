@@ -177,6 +177,43 @@ def build_city_block(
     }
 
 
+def get_yesterday_price(existing_trend: Dict[str, Any], date_label: str) -> Optional[float]:
+    labels: List[str] = list(existing_trend.get("labels") or [])
+    arr_22: List[float] = list(existing_trend.get("22k") or [])
+    if not labels or not arr_22:
+        return None
+
+    if labels[-1] == date_label and len(arr_22) >= 2:
+        return float(arr_22[-2])
+    if labels[-1] != date_label:
+        return float(arr_22[-1])
+    return None
+
+
+def generate_market_update(today_22k: int, yesterday_22k: Optional[float]) -> str:
+    if yesterday_22k is None:
+        return (
+            f"India 22K gold was quoted around Rs. {today_22k:,} per gram today as domestic bullion markets tracked global cues. "
+            "Traders continued to watch rupee movement and near-term retail demand for direction."
+        )
+
+    change = today_22k - int(round(yesterday_22k))
+    if change > 0:
+        direction = "moved higher"
+        move_text = f"up by Rs. {change:,} per gram from yesterday"
+    elif change < 0:
+        direction = "eased"
+        move_text = f"down by Rs. {abs(change):,} per gram from yesterday"
+    else:
+        direction = "held steady"
+        move_text = "unchanged from yesterday"
+
+    return (
+        f"India 22K gold {direction} today, with indicative prices near Rs. {today_22k:,} per gram and {move_text}. "
+        "Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment."
+    )
+
+
 def main() -> int:
     project_root = Path(__file__).resolve().parents[1]
     rates_path = project_root / "public" / "rates.json"
@@ -189,6 +226,7 @@ def main() -> int:
     existing_cities = existing.get("cities", {})
     new_cities: Dict[str, Any] = {}
     failed: List[str] = []
+    market_update = ""
 
     for city_key, config in CITY_CONFIG.items():
         print(f"\nScraping {config['name']} from PolicyBazaar...")
@@ -203,16 +241,23 @@ def main() -> int:
 
         old_rates = existing_cities.get(city_key, {}).get("rates", {})
         existing_trend = existing_cities.get(city_key, {}).get("monthlyTrend", {})
+        yesterday_22k = get_yesterday_price(existing_trend, date_label)
 
         new_cities[city_key] = build_city_block(
             per_gram, old_rates, existing_trend, date_label, config["name"]
         )
+        if not market_update:
+            market_update = generate_market_update(int(round(per_gram["22k"])), yesterday_22k)
 
     if not new_cities:
         print("\nERROR: All cities failed.", file=sys.stderr)
         return 1
 
-    payload = {"lastUpdated": last_updated, "cities": new_cities}
+    payload = {
+        "lastUpdated": last_updated,
+        "marketUpdate": market_update or existing.get("marketUpdate", ""),
+        "cities": new_cities,
+    }
     rates_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(f"\nrates.json updated successfully. Failed: {failed if failed else 'none'}")
     return 0
