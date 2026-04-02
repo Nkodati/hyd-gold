@@ -35,9 +35,28 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
+  const relatedPosts = getAllPosts().filter((item) => item.slug !== post.slug).slice(0, 2)
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.description,
+    datePublished: post.publishedAt,
+    author: {
+      '@type': 'Organization',
+      name: 'GoldRateIndia.live',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'GoldRateIndia.live',
+    },
+    mainEntityOfPage: `https://goldrateindia.live/blog/${post.slug}`,
+  }
+
   return (
     <div className="noise-bg grid-bg min-h-screen">
       <main className="static-page">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
         <p className="blog-eyebrow">{post.category}</p>
         <h1>{post.title}</h1>
         <div className="blog-post-meta">
@@ -54,6 +73,23 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             ))}
           </section>
         ))}
+
+        <div className="divider-line" />
+
+        <h2>Related reading</h2>
+        <div className="city-link-grid">
+          {relatedPosts.map((item) => (
+            <Link key={item.slug} href={`/blog/${item.slug}`} className="city-link-card">
+              <div className="blog-card-meta">
+                <span>{item.category}</span>
+                <span>{item.readTime}</span>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.excerpt}</p>
+              <span className="blog-card-link">Read article</span>
+            </Link>
+          ))}
+        </div>
 
         <div className="divider-line" />
 

@@ -18,7 +18,7 @@ const dmMono = DM_Mono({
 export const metadata: Metadata = {
   title: 'Gold Rate India — Live Gold & Silver Rates Today',
   description:
-    'Live gold and silver rates across India — Chennai, Hyderabad, Bangalore, Ahmedabad. 22K, 24K, 18K rates updated daily.',
+    'Live gold and silver rates across India with city pages, buying guides, calculators, FAQs, and daily market context.',
   keywords: [
     'gold rate india',
     'gold rate today',
@@ -59,12 +59,45 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="nav-logo-india">India</span>
             </Link>
             <div className="nav-links">
+              <Link href="/city/hyderabad">Cities</Link>
+              <Link href="/calculators/gold-price-calculator">Calculator</Link>
               <Link href="/blog">Blog</Link>
+              <Link href="/guides">Guides</Link>
+              <Link href="/faq">FAQ</Link>
               <Link href="/about">About</Link>
               <Link href="/contact">Contact</Link>
             </div>
           </div>
         </nav>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'GoldRateIndia.live',
+              url: 'https://goldrateindia.live',
+              email: 'goldratesindia4@gmail.com',
+              sameAs: [],
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'GoldRateIndia.live',
+              url: 'https://goldrateindia.live',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: 'https://goldrateindia.live/blog',
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
+        />
         {children}
         <footer className="site-footer">
           <div className="footer-inner">
@@ -72,7 +105,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               © 2026 GoldRateIndia.live — Indicative rates only. Not financial advice.
             </p>
             <div className="footer-links flex flex-wrap gap-4 sm:gap-6">
+              <Link href="/city/hyderabad">Cities</Link>
+              <Link href="/calculators/gold-price-calculator">Calculator</Link>
               <Link href="/blog">Blog</Link>
+              <Link href="/guides">Guides</Link>
+              <Link href="/faq">FAQ</Link>
+              <Link href="/editorial-policy">Editorial</Link>
               <Link href="/about">About</Link>
               <Link href="/privacy-policy">Privacy</Link>
               <Link href="/contact">Contact</Link>

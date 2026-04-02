@@ -42,6 +42,20 @@ export default function ContactPage() {
           Want another metro or tier-1 city added to the selector? Tell us which city, why it matters to your audience, and any
           public data sources you recommend. We prioritise requests that improve coverage for large reader groups.
         </p>
+
+        <h2>Editorial Questions</h2>
+        <p>
+          If you have corrections or suggestions for our city guides, FAQs, calculators, or gold buying articles, email us with
+          the page URL and a short explanation. We review good-faith feedback carefully because accuracy and clarity matter more
+          than publishing volume.
+        </p>
+
+        <h2>Partnerships</h2>
+        <p>
+          We are open to carefully reviewed partnerships relevant to gold rates, jewellery education, and buyer tools. If you
+          represent a brand or jeweller and want to discuss a sponsorship or listing idea, send a clear proposal that explains
+          what readers would gain from it.
+        </p>
       </main>
     </div>
   )

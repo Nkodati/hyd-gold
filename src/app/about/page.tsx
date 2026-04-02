@@ -59,6 +59,19 @@ export default function AboutPage() {
           decision still rests with you and your trusted jeweller.
         </p>
 
+        <h2>How To Use The Site</h2>
+        <p>
+          Start on the homepage if you want a quick snapshot of today&apos;s rates. If you need more depth, our city pages add local
+          buying context, our <Link href="/blog">blog</Link> explains concepts such as purity and timing, our{' '}
+          <Link href="/guides">guides library</Link> targets deeper buyer questions, the{' '}
+          <Link href="/faq">FAQ</Link> answers common buyer questions, and our{' '}
+          <Link href="/calculators/gold-price-calculator">gold calculator</Link> helps estimate total purchase cost.
+        </p>
+        <p>
+          We also publish an <Link href="/editorial-policy">editorial policy</Link> so readers understand how we handle indicative
+          prices and educational content.
+        </p>
+
         <h2>Disclaimer</h2>
         <p>
           Information on GoldRateIndia.live is provided for general educational purposes only. It is not investment, tax, or legal
