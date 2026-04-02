@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import Link from 'next/link'
 import { Syne, DM_Mono } from 'next/font/google'
 import './globals.css'
@@ -27,13 +27,18 @@ export const metadata: Metadata = {
     '24k gold rate',
     'live gold rate',
   ],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
   other: {
     'google-adsense-account': 'ca-pub-2917360666100529',
   },
   verification: {
     google: 'WB1hluJUJLZ1SPggfn2XU554hTGeJaeRT9FPr9IPpv0',
   },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -54,6 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="nav-logo-india">India</span>
             </Link>
             <div className="nav-links">
+              <Link href="/blog">Blog</Link>
               <Link href="/about">About</Link>
               <Link href="/contact">Contact</Link>
             </div>
@@ -66,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               © 2026 GoldRateIndia.live — Indicative rates only. Not financial advice.
             </p>
             <div className="footer-links flex flex-wrap gap-4 sm:gap-6">
+              <Link href="/blog">Blog</Link>
               <Link href="/about">About</Link>
               <Link href="/privacy-policy">Privacy</Link>
               <Link href="/contact">Contact</Link>
