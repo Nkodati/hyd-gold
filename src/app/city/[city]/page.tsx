@@ -40,6 +40,15 @@ export default async function CityPage({ params }: CityPageProps) {
 
   const data = await getRates()
   const city = data.cities[params.city]
+  const cityOptions = Object.entries(data.cities).map(([key, item]) => ({
+    key: key as CityKey,
+    name: item.name,
+    rates: {
+      '24k': item.rates['24k'].perGram,
+      '22k': item.rates['22k'].perGram,
+      '18k': item.rates['18k'].perGram,
+    },
+  }))
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -80,14 +89,7 @@ export default async function CityPage({ params }: CityPageProps) {
           <p key={paragraph}>{paragraph}</p>
         ))}
 
-        <GoldCalculator
-          cityName={content.cityName}
-          rates={{
-            '24k': city.rates['24k'].perGram,
-            '22k': city.rates['22k'].perGram,
-            '18k': city.rates['18k'].perGram,
-          }}
-        />
+        <GoldCalculator cityOptions={cityOptions} initialCity={params.city} />
 
         <h2>Buying tips for {content.cityName}</h2>
         {content.buyingTips.map((tip) => (

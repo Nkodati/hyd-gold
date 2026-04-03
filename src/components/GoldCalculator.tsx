@@ -1,12 +1,19 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import type { CityKey } from '@/components/GoldDashboard'
 
 type Purity = '24k' | '22k' | '18k'
 
-interface GoldCalculatorProps {
+interface CityCalculatorOption {
+  key: CityKey
+  name: string
   rates: Record<Purity, number>
-  cityName: string
+}
+
+interface GoldCalculatorProps {
+  cityOptions: CityCalculatorOption[]
+  initialCity?: CityKey
 }
 
 const PURITY_LABELS: Record<Purity, string> = {
@@ -15,15 +22,18 @@ const PURITY_LABELS: Record<Purity, string> = {
   '18k': '18K',
 }
 
-export default function GoldCalculator({ rates, cityName }: GoldCalculatorProps) {
+export default function GoldCalculator({ cityOptions, initialCity }: GoldCalculatorProps) {
+  const defaultCity = cityOptions.find((city) => city.key === initialCity) ?? cityOptions[0]
+  const [selectedCity, setSelectedCity] = useState<CityKey>(defaultCity.key)
   const [purity, setPurity] = useState<Purity>('22k')
   const [grams, setGrams] = useState('10')
   const [makingCharge, setMakingCharge] = useState('12')
+  const activeCity = cityOptions.find((city) => city.key === selectedCity) ?? defaultCity
 
   const result = useMemo(() => {
     const parsedGrams = Number(grams) || 0
     const parsedMakingCharge = Number(makingCharge) || 0
-    const baseRate = rates[purity]
+    const baseRate = activeCity.rates[purity]
     const metalValue = parsedGrams * baseRate
     const makingValue = metalValue * (parsedMakingCharge / 100)
     const gst = (metalValue + makingValue) * 0.03
@@ -35,19 +45,30 @@ export default function GoldCalculator({ rates, cityName }: GoldCalculatorProps)
       gst,
       total,
     }
-  }, [grams, makingCharge, purity, rates])
+  }, [activeCity.rates, grams, makingCharge, purity])
 
   const fmt = (value: number) => `₹${Math.round(value).toLocaleString('en-IN')}`
 
   return (
     <div className="content-section">
-      <h2 className="!mt-0">Gold Price Calculator for {cityName}</h2>
+      <h2 className="!mt-0">Gold Price Calculator for {activeCity.name}</h2>
       <p>
         Estimate your bill using today&apos;s indicative rates, your planned weight, and an approximate making-charge percentage.
         This is helpful for comparing quotes before you visit a jeweller.
       </p>
 
       <div className="calculator-grid">
+        <label className="calculator-field">
+          <span>City</span>
+          <select value={selectedCity} onChange={(event) => setSelectedCity(event.target.value as CityKey)}>
+            {cityOptions.map((city) => (
+              <option key={city.key} value={city.key}>
+                {city.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
         <label className="calculator-field">
           <span>Purity</span>
           <select value={purity} onChange={(event) => setPurity(event.target.value as Purity)}>
@@ -88,6 +109,10 @@ export default function GoldCalculator({ rates, cityName }: GoldCalculatorProps)
           <strong>{fmt(result.total)}</strong>
         </div>
       </div>
+
+      <p className="mt-4 text-xs" style={{ color: 'var(--text-tertiary)' }}>
+        Using today&apos;s {PURITY_LABELS[purity]} indicative rate for {activeCity.name}: {fmt(activeCity.rates[purity])} per gram.
+      </p>
     </div>
   )
 }

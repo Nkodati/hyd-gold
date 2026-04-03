@@ -10,7 +10,15 @@ export const metadata: Metadata = {
 
 export default async function GoldPriceCalculatorPage() {
   const data = await getRates()
-  const baseCity = data.cities.hyderabad
+  const cityOptions = Object.entries(data.cities).map(([key, city]) => ({
+    key: key as keyof typeof data.cities,
+    name: city.name,
+    rates: {
+      '24k': city.rates['24k'].perGram,
+      '22k': city.rates['22k'].perGram,
+      '18k': city.rates['18k'].perGram,
+    },
+  }))
 
   return (
     <div className="noise-bg grid-bg min-h-screen">
@@ -22,14 +30,7 @@ export default async function GoldPriceCalculatorPage() {
           included. It is not a binding quote, but it helps readers compare stores more intelligently.
         </p>
 
-        <GoldCalculator
-          cityName={baseCity.name}
-          rates={{
-            '24k': baseCity.rates['24k'].perGram,
-            '22k': baseCity.rates['22k'].perGram,
-            '18k': baseCity.rates['18k'].perGram,
-          }}
-        />
+        <GoldCalculator cityOptions={cityOptions} initialCity="hyderabad" />
 
         <h2>How to use this calculator</h2>
         <p>
