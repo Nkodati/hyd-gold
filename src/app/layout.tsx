@@ -59,7 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="nav-logo-india">India</span>
             </Link>
             <div className="nav-links">
-              <Link href="/city/hyderabad">Cities</Link>
+              <Link href="/">Home</Link>
+              <Link href="/city">Cities</Link>
               <Link href="/calculators/gold-price-calculator">Calculator</Link>
               <Link href="/blog">Blog</Link>
               <Link href="/guides">Guides</Link>
@@ -105,7 +106,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               © 2026 GoldRateIndia.live — Indicative rates only. Not financial advice.
             </p>
             <div className="footer-links flex flex-wrap gap-4 sm:gap-6">
-              <Link href="/city/hyderabad">Cities</Link>
+              <Link href="/">Home</Link>
+              <Link href="/city">Cities</Link>
               <Link href="/calculators/gold-price-calculator">Calculator</Link>
               <Link href="/blog">Blog</Link>
               <Link href="/guides">Guides</Link>

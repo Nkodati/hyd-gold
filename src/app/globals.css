@@ -145,11 +145,12 @@ body {
   max-width: 760px;
   margin-left: auto;
   margin-right: auto;
-  padding: 0 16px;
-  height: 52px;
+  padding: 10px 16px 12px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 14px;
 }
 
 .nav-logo {
@@ -168,7 +169,9 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 20px;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .nav-links a {
@@ -453,6 +456,46 @@ body {
   line-height: 1.8;
 }
 
+.city-card-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.city-card-stats span {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(245, 240, 232, 0.38);
+}
+
+.directory-filter {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.directory-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  color: rgba(245, 240, 232, 0.5);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.directory-chip.active {
+  color: #FFD14D;
+  background: rgba(255, 193, 7, 0.1);
+  border-color: rgba(255, 193, 7, 0.3);
+}
+
 .calculator-grid {
   display: grid;
   gap: 14px;
@@ -568,5 +611,34 @@ body {
   .calculator-results,
   .stats-inline-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .nav-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-logo {
+    font-size: 18px;
+  }
+
+  .nav-links {
+    width: 100%;
+    gap: 10px 14px;
+    justify-content: flex-start;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+  }
+
+  .static-page {
+    padding-top: 28px;
+  }
+
+  .content-section {
+    padding: 18px;
   }
 }
