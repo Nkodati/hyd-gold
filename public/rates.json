@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-09T10:27:32.162898+05:30",
+  "lastUpdated": "2026-04-09T19:49:12.063738+05:30",
   "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 13,810 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
@@ -459,24 +459,24 @@
       "name": "Ahmedabad",
       "rates": {
         "22k": {
-          "perGram": 14204,
-          "per10g": 142040,
-          "change": 0
+          "perGram": 13989,
+          "per10g": 139890,
+          "change": -215
         },
         "24k": {
-          "perGram": 14914,
-          "per10g": 149140,
-          "change": 0
+          "perGram": 14688,
+          "per10g": 146880,
+          "change": -226
         },
         "18k": {
-          "perGram": 11630,
-          "per10g": 116299,
-          "change": 0
+          "perGram": 11454,
+          "per10g": 114539,
+          "change": -176
         },
         "silver": {
-          "perGram": 283,
-          "perKg": 283370,
-          "change": 0
+          "perGram": 279,
+          "perKg": 279070,
+          "change": -4
         }
       },
       "monthlyTrend": {
@@ -540,7 +540,7 @@
           13939,
           13839,
           14204,
-          14204
+          13989
         ],
         "24k": [
           14320,
@@ -571,7 +571,7 @@
           14636,
           14531,
           14914,
-          14914
+          14688
         ],
         "18k": [
           10820,
@@ -602,7 +602,7 @@
           11413,
           11331,
           11630,
-          11630
+          11454
         ]
       }
     }
