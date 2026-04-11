@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-11T10:03:32.669214+05:30",
+  "lastUpdated": "2026-04-11T19:05:07.745943+05:30",
   "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 14,125 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
@@ -161,24 +161,24 @@
       "name": "Hyderabad",
       "rates": {
         "22k": {
-          "perGram": 14000,
-          "per10g": 140000,
-          "change": 0
+          "perGram": 14125,
+          "per10g": 141250,
+          "change": 125
         },
         "24k": {
-          "perGram": 14700,
-          "per10g": 147000,
-          "change": 0
+          "perGram": 14831,
+          "per10g": 148310,
+          "change": 131
         },
         "18k": {
-          "perGram": 11463,
-          "per10g": 114629,
-          "change": 0
+          "perGram": 11565,
+          "per10g": 115652,
+          "change": 102
         },
         "silver": {
-          "perGram": 279,
-          "perKg": 279300,
-          "change": 0
+          "perGram": 282,
+          "perKg": 281790,
+          "change": 3
         }
       },
       "monthlyTrend": {
@@ -244,7 +244,7 @@
           13860,
           13860,
           14000,
-          14000
+          14125
         ],
         "24k": [
           14470,
@@ -276,7 +276,7 @@
           14553,
           14553,
           14700,
-          14700
+          14831
         ],
         "18k": [
           10940,
@@ -308,7 +308,7 @@
           11348,
           11348,
           11463,
-          11463
+          11565
         ]
       }
     },
@@ -316,24 +316,24 @@
       "name": "Bangalore",
       "rates": {
         "22k": {
-          "perGram": 13995,
-          "per10g": 139950,
-          "change": 0
+          "perGram": 14120,
+          "per10g": 141200,
+          "change": 125
         },
         "24k": {
-          "perGram": 14695,
-          "per10g": 146950,
-          "change": 0
+          "perGram": 14826,
+          "per10g": 148260,
+          "change": 131
         },
         "18k": {
-          "perGram": 11459,
-          "per10g": 114588,
-          "change": 0
+          "perGram": 11561,
+          "per10g": 115611,
+          "change": 102
         },
         "silver": {
-          "perGram": 279,
-          "perKg": 279200,
-          "change": 0
+          "perGram": 282,
+          "perKg": 281690,
+          "change": 3
         }
       },
       "monthlyTrend": {
@@ -399,7 +399,7 @@
           13780,
           13780,
           13995,
-          13995
+          14120
         ],
         "24k": [
           14520,
@@ -431,7 +431,7 @@
           14469,
           14469,
           14695,
-          14695
+          14826
         ],
         "18k": [
           10990,
@@ -463,7 +463,7 @@
           11283,
           11283,
           11459,
-          11459
+          11561
         ]
       }
     },
@@ -471,23 +471,23 @@
       "name": "Ahmedabad",
       "rates": {
         "22k": {
-          "perGram": 14129,
-          "per10g": 141290,
-          "change": 0
+          "perGram": 14114,
+          "per10g": 141140,
+          "change": -15
         },
         "24k": {
-          "perGram": 14835,
-          "per10g": 148350,
-          "change": 0
+          "perGram": 14820,
+          "per10g": 148200,
+          "change": -15
         },
         "18k": {
-          "perGram": 11568,
-          "per10g": 115685,
-          "change": 0
+          "perGram": 11556,
+          "per10g": 115562,
+          "change": -12
         },
         "silver": {
           "perGram": 282,
-          "perKg": 281870,
+          "perKg": 281580,
           "change": 0
         }
       },
@@ -554,7 +554,7 @@
           14204,
           13989,
           14129,
-          14129
+          14114
         ],
         "24k": [
           14490,
@@ -586,7 +586,7 @@
           14914,
           14688,
           14835,
-          14835
+          14820
         ],
         "18k": [
           10960,
@@ -618,7 +618,7 @@
           11630,
           11454,
           11568,
-          11568
+          11556
         ]
       }
     }
