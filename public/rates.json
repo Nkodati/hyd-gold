@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-01T12:59:29.010945+05:30",
+  "lastUpdated": "2026-06-01T23:52:35.685490+05:30",
   "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 14,630 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
@@ -163,22 +163,22 @@
         "22k": {
           "perGram": 14500,
           "per10g": 145000,
-          "change": -130
+          "change": 0
         },
         "24k": {
           "perGram": 15225,
           "per10g": 152250,
-          "change": -137
+          "change": 0
         },
         "18k": {
           "perGram": 11872,
           "per10g": 118723,
-          "change": -107
+          "change": 0
         },
         "silver": {
           "perGram": 289,
           "perKg": 289270,
-          "change": -3
+          "change": 0
         }
       },
       "monthlyTrend": {
@@ -316,24 +316,24 @@
       "name": "Bangalore",
       "rates": {
         "22k": {
-          "perGram": 14505,
-          "per10g": 145050,
-          "change": 0
+          "perGram": 14430,
+          "per10g": 144300,
+          "change": -75
         },
         "24k": {
-          "perGram": 15230,
-          "per10g": 152300,
-          "change": 0
+          "perGram": 15152,
+          "per10g": 151520,
+          "change": -78
         },
         "18k": {
-          "perGram": 11876,
-          "per10g": 118764,
-          "change": 0
+          "perGram": 11815,
+          "per10g": 118150,
+          "change": -61
         },
         "silver": {
-          "perGram": 289,
-          "perKg": 289370,
-          "change": 0
+          "perGram": 288,
+          "perKg": 287890,
+          "change": -1
         }
       },
       "monthlyTrend": {
@@ -399,7 +399,7 @@
           14415,
           14675,
           14505,
-          14505
+          14430
         ],
         "24k": [
           14642,
@@ -431,7 +431,7 @@
           15136,
           15409,
           15230,
-          15230
+          15152
         ],
         "18k": [
           11418,
@@ -463,7 +463,7 @@
           11803,
           12016,
           11876,
-          11876
+          11815
         ]
       }
     },
