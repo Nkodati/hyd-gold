@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-08-08T18:55:20.830290+05:30",
-  "marketUpdate": "India 22K gold moved higher today, with indicative prices near Rs. 13,965 per gram and up by Rs. 215 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
+  "lastUpdated": "2026-08-09T09:29:04.843921+05:30",
+  "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 13,965 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
       "name": "Chennai",
@@ -8,27 +8,26 @@
         "22k": {
           "perGram": 13965,
           "per10g": 139650,
-          "change": 215
+          "change": 0
         },
         "24k": {
           "perGram": 14663,
           "per10g": 146630,
-          "change": 225
+          "change": 0
         },
         "18k": {
           "perGram": 11434,
           "per10g": 114342,
-          "change": 176
+          "change": 0
         },
         "silver": {
           "perGram": 279,
           "perKg": 278600,
-          "change": 5
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Jul 09",
           "Jul 10",
           "Jul 11",
           "Jul 12",
@@ -57,10 +56,10 @@
           "Aug 05",
           "Aug 06",
           "Aug 07",
-          "Aug 08"
+          "Aug 08",
+          "Aug 09"
         ],
         "22k": [
-          13220,
           13350,
           13300,
           13300,
@@ -89,10 +88,10 @@
           13200,
           13750,
           13750,
+          13965,
           13965
         ],
         "24k": [
-          13881,
           14018,
           13965,
           13965,
@@ -121,10 +120,10 @@
           13860,
           14438,
           14438,
+          14663,
           14663
         ],
         "18k": [
-          10824,
           10931,
           10890,
           10890,
@@ -153,6 +152,7 @@
           10808,
           11258,
           11258,
+          11434,
           11434
         ]
       }
@@ -163,27 +163,26 @@
         "22k": {
           "perGram": 13965,
           "per10g": 139650,
-          "change": 215
+          "change": 0
         },
         "24k": {
           "perGram": 14663,
           "per10g": 146630,
-          "change": 225
+          "change": 0
         },
         "18k": {
           "perGram": 11434,
           "per10g": 114342,
-          "change": 176
+          "change": 0
         },
         "silver": {
           "perGram": 279,
           "perKg": 278600,
-          "change": 5
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Jul 10",
           "Jul 11",
           "Jul 12",
           "Jul 13",
@@ -212,10 +211,10 @@
           "Aug 05",
           "Aug 06",
           "Aug 07",
-          "Aug 08"
+          "Aug 08",
+          "Aug 09"
         ],
         "22k": [
-          13350,
           13300,
           13300,
           13200,
@@ -244,10 +243,10 @@
           13200,
           13750,
           13750,
+          13965,
           13965
         ],
         "24k": [
-          14018,
           13965,
           13965,
           13860,
@@ -276,10 +275,10 @@
           13860,
           14438,
           14438,
+          14663,
           14663
         ],
         "18k": [
-          10931,
           10890,
           10890,
           10808,
@@ -308,6 +307,7 @@
           10808,
           11258,
           11258,
+          11434,
           11434
         ]
       }
@@ -318,27 +318,26 @@
         "22k": {
           "perGram": 14075,
           "per10g": 140750,
-          "change": 225
+          "change": 0
         },
         "24k": {
           "perGram": 14779,
           "per10g": 147790,
-          "change": 236
+          "change": 0
         },
         "18k": {
           "perGram": 11524,
           "per10g": 115243,
-          "change": 184
+          "change": 0
         },
         "silver": {
           "perGram": 281,
           "perKg": 280800,
-          "change": 5
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Jul 10",
           "Jul 11",
           "Jul 12",
           "Jul 13",
@@ -367,10 +366,10 @@
           "Aug 05",
           "Aug 06",
           "Aug 07",
-          "Aug 08"
+          "Aug 08",
+          "Aug 09"
         ],
         "22k": [
-          13385,
           13340,
           13340,
           13210,
@@ -399,10 +398,10 @@
           13310,
           13835,
           13850,
+          14075,
           14075
         ],
         "24k": [
-          14054,
           14007,
           14007,
           13871,
@@ -431,10 +430,10 @@
           13976,
           14527,
           14543,
+          14779,
           14779
         ],
         "18k": [
-          10959,
           10922,
           10922,
           10816,
@@ -463,6 +462,7 @@
           10898,
           11328,
           11340,
+          11524,
           11524
         ]
       }
@@ -473,27 +473,26 @@
         "22k": {
           "perGram": 14069,
           "per10g": 140690,
-          "change": 225
+          "change": 0
         },
         "24k": {
           "perGram": 14772,
           "per10g": 147720,
-          "change": 236
+          "change": 0
         },
         "18k": {
           "perGram": 11519,
           "per10g": 115194,
-          "change": 184
+          "change": 0
         },
         "silver": {
           "perGram": 281,
           "perKg": 280670,
-          "change": 5
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Jul 09",
           "Jul 10",
           "Jul 11",
           "Jul 12",
@@ -522,10 +521,10 @@
           "Aug 05",
           "Aug 06",
           "Aug 07",
-          "Aug 08"
+          "Aug 08",
+          "Aug 09"
         ],
         "22k": [
-          13234,
           13379,
           13334,
           13334,
@@ -554,10 +553,10 @@
           13304,
           13829,
           13844,
+          14069,
           14069
         ],
         "24k": [
-          13896,
           14048,
           14001,
           14001,
@@ -586,10 +585,10 @@
           13969,
           14520,
           14536,
+          14772,
           14772
         ],
         "18k": [
-          10836,
           10954,
           10918,
           10918,
@@ -618,6 +617,7 @@
           10893,
           11323,
           11335,
+          11519,
           11519
         ]
       }
