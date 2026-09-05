@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-09-04T22:00:48.269223+05:30",
-  "marketUpdate": "India 22K gold moved higher today, with indicative prices near Rs. 14,360 per gram and up by Rs. 120 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
+  "lastUpdated": "2026-09-05T12:34:03.406601+05:30",
+  "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 14,360 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
       "name": "Chennai",
@@ -28,7 +28,6 @@
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 06",
           "Aug 07",
           "Aug 08",
           "Aug 09",
@@ -57,10 +56,10 @@
           "Sep 01",
           "Sep 02",
           "Sep 03",
-          "Sep 04"
+          "Sep 04",
+          "Sep 05"
         ],
         "22k": [
-          13750,
           13750,
           13965,
           13965,
@@ -89,10 +88,10 @@
           14385,
           13950,
           14240,
+          14360,
           14360
         ],
         "24k": [
-          14438,
           14438,
           14663,
           14663,
@@ -121,10 +120,10 @@
           15104,
           14648,
           14952,
+          15078,
           15078
         ],
         "18k": [
-          11258,
           11258,
           11434,
           11434,
@@ -153,6 +152,7 @@
           11778,
           11422,
           11659,
+          11758,
           11758
         ]
       }
@@ -163,27 +163,26 @@
         "22k": {
           "perGram": 14360,
           "per10g": 143600,
-          "change": 120
+          "change": 0
         },
         "24k": {
           "perGram": 15078,
           "per10g": 150780,
-          "change": 126
+          "change": 0
         },
         "18k": {
           "perGram": 11758,
           "per10g": 117576,
-          "change": 99
+          "change": 0
         },
         "silver": {
           "perGram": 286,
           "perKg": 286480,
-          "change": 2
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 06",
           "Aug 07",
           "Aug 08",
           "Aug 09",
@@ -212,10 +211,10 @@
           "Sep 01",
           "Sep 02",
           "Sep 03",
-          "Sep 04"
+          "Sep 04",
+          "Sep 05"
         ],
         "22k": [
-          13750,
           13750,
           13965,
           13965,
@@ -244,10 +243,10 @@
           14385,
           13950,
           14240,
+          14360,
           14360
         ],
         "24k": [
-          14438,
           14438,
           14663,
           14663,
@@ -276,10 +275,10 @@
           15104,
           14648,
           14952,
+          15078,
           15078
         ],
         "18k": [
-          11258,
           11258,
           11434,
           11434,
@@ -308,6 +307,7 @@
           11778,
           11422,
           11659,
+          11758,
           11758
         ]
       }
@@ -338,7 +338,6 @@
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 06",
           "Aug 07",
           "Aug 08",
           "Aug 09",
@@ -367,10 +366,10 @@
           "Sep 01",
           "Sep 02",
           "Sep 03",
-          "Sep 04"
+          "Sep 04",
+          "Sep 05"
         ],
         "22k": [
-          13835,
           13850,
           14075,
           14075,
@@ -399,10 +398,10 @@
           14495,
           14325,
           14350,
+          14350,
           14350
         ],
         "24k": [
-          14527,
           14543,
           14779,
           14779,
@@ -431,10 +430,10 @@
           15220,
           15041,
           15068,
+          15068,
           15068
         ],
         "18k": [
-          11328,
           11340,
           11524,
           11524,
@@ -463,6 +462,7 @@
           11868,
           11729,
           11749,
+          11749,
           11749
         ]
       }
@@ -473,27 +473,26 @@
         "22k": {
           "perGram": 14464,
           "per10g": 144640,
-          "change": 120
+          "change": 0
         },
         "24k": {
           "perGram": 15187,
           "per10g": 151870,
-          "change": 126
+          "change": 0
         },
         "18k": {
           "perGram": 11843,
           "per10g": 118428,
-          "change": 98
+          "change": 0
         },
         "silver": {
           "perGram": 289,
           "perKg": 288550,
-          "change": 3
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 06",
           "Aug 07",
           "Aug 08",
           "Aug 09",
@@ -522,10 +521,10 @@
           "Sep 01",
           "Sep 02",
           "Sep 03",
-          "Sep 04"
+          "Sep 04",
+          "Sep 05"
         ],
         "22k": [
-          13829,
           13844,
           14069,
           14069,
@@ -554,10 +553,10 @@
           14489,
           14319,
           14344,
+          14464,
           14464
         ],
         "24k": [
-          14520,
           14536,
           14772,
           14772,
@@ -586,10 +585,10 @@
           15213,
           15035,
           15061,
+          15187,
           15187
         ],
         "18k": [
-          11323,
           11335,
           11519,
           11519,
@@ -618,6 +617,7 @@
           11863,
           11724,
           11745,
+          11843,
           11843
         ]
       }
