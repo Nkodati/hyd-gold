@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-06T12:45:27.963584+05:30",
+  "lastUpdated": "2026-09-06T21:06:37.485942+05:30",
   "marketUpdate": "India 22K gold eased today, with indicative prices near Rs. 14,190 per gram and down by Rs. 170 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
@@ -8,22 +8,22 @@
         "22k": {
           "perGram": 14190,
           "per10g": 141900,
-          "change": -170
+          "change": 0
         },
         "24k": {
           "perGram": 14900,
           "per10g": 149000,
-          "change": -178
+          "change": 0
         },
         "18k": {
           "perGram": 11618,
           "per10g": 116184,
-          "change": -140
+          "change": 0
         },
         "silver": {
           "perGram": 283,
           "perKg": 283100,
-          "change": -3
+          "change": 0
         }
       },
       "monthlyTrend": {
