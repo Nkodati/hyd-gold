@@ -1,34 +1,33 @@
 {
-  "lastUpdated": "2026-09-09T22:18:19.446509+05:30",
-  "marketUpdate": "India 22K gold eased today, with indicative prices near Rs. 14,145 per gram and down by Rs. 125 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
+  "lastUpdated": "2026-09-10T12:57:40.429229+05:30",
+  "marketUpdate": "India 22K gold moved higher today, with indicative prices near Rs. 14,255 per gram and up by Rs. 110 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
       "name": "Chennai",
       "rates": {
         "22k": {
-          "perGram": 14145,
-          "per10g": 141450,
-          "change": 0
+          "perGram": 14255,
+          "per10g": 142550,
+          "change": 110
         },
         "24k": {
-          "perGram": 14852,
-          "per10g": 148520,
-          "change": 0
+          "perGram": 14968,
+          "per10g": 149680,
+          "change": 116
         },
         "18k": {
-          "perGram": 11582,
-          "per10g": 115816,
-          "change": 0
+          "perGram": 11672,
+          "per10g": 116717,
+          "change": 90
         },
         "silver": {
-          "perGram": 282,
-          "perKg": 282190,
-          "change": 0
+          "perGram": 284,
+          "perKg": 284390,
+          "change": 2
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 11",
           "Aug 12",
           "Aug 13",
           "Aug 14",
@@ -57,10 +56,10 @@
           "Sep 06",
           "Sep 07",
           "Sep 08",
-          "Sep 09"
+          "Sep 09",
+          "Sep 10"
         ],
         "22k": [
-          14250,
           14200,
           14200,
           14040,
@@ -89,10 +88,10 @@
           14190,
           14130,
           14270,
-          14145
+          14145,
+          14255
         ],
         "24k": [
-          14963,
           14910,
           14910,
           14742,
@@ -121,10 +120,10 @@
           14900,
           14837,
           14984,
-          14852
+          14852,
+          14968
         ],
         "18k": [
-          11668,
           11627,
           11627,
           11496,
@@ -153,7 +152,8 @@
           11618,
           11569,
           11684,
-          11582
+          11582,
+          11672
         ]
       }
     },
@@ -161,29 +161,28 @@
       "name": "Hyderabad",
       "rates": {
         "22k": {
-          "perGram": 14145,
-          "per10g": 141450,
-          "change": 0
+          "perGram": 14255,
+          "per10g": 142550,
+          "change": 110
         },
         "24k": {
-          "perGram": 14852,
-          "per10g": 148520,
-          "change": 0
+          "perGram": 14968,
+          "per10g": 149680,
+          "change": 116
         },
         "18k": {
-          "perGram": 11582,
-          "per10g": 115816,
-          "change": 0
+          "perGram": 11672,
+          "per10g": 116717,
+          "change": 90
         },
         "silver": {
-          "perGram": 282,
-          "perKg": 282190,
-          "change": 0
+          "perGram": 284,
+          "perKg": 284390,
+          "change": 2
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 11",
           "Aug 12",
           "Aug 13",
           "Aug 14",
@@ -212,10 +211,10 @@
           "Sep 06",
           "Sep 07",
           "Sep 08",
-          "Sep 09"
+          "Sep 09",
+          "Sep 10"
         ],
         "22k": [
-          14250,
           14200,
           14200,
           14040,
@@ -244,10 +243,10 @@
           14190,
           14130,
           14270,
-          14145
+          14145,
+          14255
         ],
         "24k": [
-          14963,
           14910,
           14910,
           14742,
@@ -276,10 +275,10 @@
           14900,
           14837,
           14984,
-          14852
+          14852,
+          14968
         ],
         "18k": [
-          11668,
           11627,
           11627,
           11496,
@@ -308,7 +307,8 @@
           11618,
           11569,
           11684,
-          11582
+          11582,
+          11672
         ]
       }
     },
@@ -318,27 +318,26 @@
         "22k": {
           "perGram": 14255,
           "per10g": 142550,
-          "change": -95
+          "change": 0
         },
         "24k": {
           "perGram": 14968,
           "per10g": 149680,
-          "change": -100
+          "change": 0
         },
         "18k": {
           "perGram": 11672,
           "per10g": 116717,
-          "change": -77
+          "change": 0
         },
         "silver": {
           "perGram": 284,
           "perKg": 284390,
-          "change": -2
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 11",
           "Aug 12",
           "Aug 13",
           "Aug 14",
@@ -367,10 +366,10 @@
           "Sep 06",
           "Sep 07",
           "Sep 08",
-          "Sep 09"
+          "Sep 09",
+          "Sep 10"
         ],
         "22k": [
-          14330,
           14330,
           14305,
           14125,
@@ -399,10 +398,10 @@
           14300,
           14240,
           14350,
+          14255,
           14255
         ],
         "24k": [
-          15047,
           15047,
           15020,
           14831,
@@ -431,10 +430,10 @@
           15015,
           14952,
           15068,
+          14968,
           14968
         ],
         "18k": [
-          11733,
           11733,
           11713,
           11565,
@@ -463,6 +462,7 @@
           11709,
           11659,
           11749,
+          11672,
           11672
         ]
       }
@@ -471,29 +471,28 @@
       "name": "Ahmedabad",
       "rates": {
         "22k": {
-          "perGram": 14249,
-          "per10g": 142490,
-          "change": -95
+          "perGram": 14359,
+          "per10g": 143590,
+          "change": 110
         },
         "24k": {
-          "perGram": 14961,
-          "per10g": 149610,
-          "change": -100
+          "perGram": 15077,
+          "per10g": 150770,
+          "change": 116
         },
         "18k": {
-          "perGram": 11667,
-          "per10g": 116668,
-          "change": -78
+          "perGram": 11757,
+          "per10g": 117568,
+          "change": 90
         },
         "silver": {
-          "perGram": 284,
-          "perKg": 284260,
-          "change": -2
+          "perGram": 286,
+          "perKg": 286460,
+          "change": 2
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 11",
           "Aug 12",
           "Aug 13",
           "Aug 14",
@@ -522,10 +521,10 @@
           "Sep 06",
           "Sep 07",
           "Sep 08",
-          "Sep 09"
+          "Sep 09",
+          "Sep 10"
         ],
         "22k": [
-          14324,
           14299,
           14299,
           14119,
@@ -554,10 +553,10 @@
           14294,
           14234,
           14344,
-          14249
+          14249,
+          14359
         ],
         "24k": [
-          15040,
           15014,
           15014,
           14825,
@@ -586,10 +585,10 @@
           15009,
           14946,
           15061,
-          14961
+          14961,
+          15077
         ],
         "18k": [
-          11728,
           11708,
           11708,
           11560,
@@ -618,7 +617,8 @@
           11704,
           11654,
           11745,
-          11667
+          11667,
+          11757
         ]
       }
     }
