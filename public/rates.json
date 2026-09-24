@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-09-24T13:15:10.752050+05:30",
-  "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 14,135 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
+  "lastUpdated": "2026-09-24T22:55:23.337571+05:30",
+  "marketUpdate": "India 22K gold eased today, with indicative prices near Rs. 14,245 per gram and down by Rs. 50 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
       "name": "Chennai",
@@ -316,24 +316,24 @@
       "name": "Bangalore",
       "rates": {
         "22k": {
-          "perGram": 14295,
-          "per10g": 142950,
-          "change": 0
+          "perGram": 14245,
+          "per10g": 142450,
+          "change": -50
         },
         "24k": {
-          "perGram": 15010,
-          "per10g": 150100,
-          "change": 0
+          "perGram": 14957,
+          "per10g": 149570,
+          "change": -53
         },
         "18k": {
-          "perGram": 11704,
-          "per10g": 117044,
-          "change": 0
+          "perGram": 11663,
+          "per10g": 116635,
+          "change": -41
         },
         "silver": {
-          "perGram": 285,
-          "perKg": 285190,
-          "change": 0
+          "perGram": 284,
+          "perKg": 284180,
+          "change": -1
         }
       },
       "monthlyTrend": {
@@ -399,7 +399,7 @@
           14380,
           14380,
           14295,
-          14295
+          14245
         ],
         "24k": [
           15876,
@@ -431,7 +431,7 @@
           15099,
           15099,
           15010,
-          15010
+          14957
         ],
         "18k": [
           12380,
@@ -463,7 +463,7 @@
           11774,
           11774,
           11704,
-          11704
+          11663
         ]
       }
     },
@@ -473,22 +473,22 @@
         "22k": {
           "perGram": 14239,
           "per10g": 142390,
-          "change": -50
+          "change": 0
         },
         "24k": {
           "perGram": 14951,
           "per10g": 149510,
-          "change": -52
+          "change": 0
         },
         "18k": {
           "perGram": 11659,
           "per10g": 116586,
-          "change": -41
+          "change": 0
         },
         "silver": {
           "perGram": 284,
           "perKg": 284070,
-          "change": -1
+          "change": 0
         }
       },
       "monthlyTrend": {
