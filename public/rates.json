@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-09-24T22:55:23.337571+05:30",
-  "marketUpdate": "India 22K gold eased today, with indicative prices near Rs. 14,245 per gram and down by Rs. 50 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
+  "lastUpdated": "2026-09-25T13:36:12.526229+05:30",
+  "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 14,135 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
       "name": "Chennai",
@@ -28,7 +28,6 @@
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 26",
           "Aug 27",
           "Aug 28",
           "Aug 29",
@@ -57,10 +56,10 @@
           "Sep 21",
           "Sep 22",
           "Sep 23",
-          "Sep 24"
+          "Sep 24",
+          "Sep 25"
         ],
         "22k": [
-          15010,
           15010,
           14650,
           14505,
@@ -89,10 +88,10 @@
           14270,
           14185,
           14135,
+          14135,
           14135
         ],
         "24k": [
-          15761,
           15761,
           15383,
           15230,
@@ -121,10 +120,10 @@
           14984,
           14894,
           14842,
+          14842,
           14842
         ],
         "18k": [
-          12290,
           12290,
           11995,
           11876,
@@ -152,6 +151,7 @@
           11696,
           11684,
           11614,
+          11573,
           11573,
           11573
         ]
@@ -183,7 +183,6 @@
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 26",
           "Aug 27",
           "Aug 28",
           "Aug 29",
@@ -212,10 +211,10 @@
           "Sep 21",
           "Sep 22",
           "Sep 23",
-          "Sep 24"
+          "Sep 24",
+          "Sep 25"
         ],
         "22k": [
-          15010,
           15010,
           14650,
           14505,
@@ -244,10 +243,10 @@
           14270,
           14185,
           14135,
+          14135,
           14135
         ],
         "24k": [
-          15761,
           15761,
           15383,
           15230,
@@ -276,10 +275,10 @@
           14984,
           14894,
           14842,
+          14842,
           14842
         ],
         "18k": [
-          12290,
           12290,
           11995,
           11876,
@@ -308,6 +307,7 @@
           11684,
           11614,
           11573,
+          11573,
           11573
         ]
       }
@@ -318,27 +318,26 @@
         "22k": {
           "perGram": 14245,
           "per10g": 142450,
-          "change": -50
+          "change": 0
         },
         "24k": {
           "perGram": 14957,
           "per10g": 149570,
-          "change": -53
+          "change": 0
         },
         "18k": {
           "perGram": 11663,
           "per10g": 116635,
-          "change": -41
+          "change": 0
         },
         "silver": {
           "perGram": 284,
           "perKg": 284180,
-          "change": -1
+          "change": 0
         }
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 26",
           "Aug 27",
           "Aug 28",
           "Aug 29",
@@ -367,10 +366,10 @@
           "Sep 21",
           "Sep 22",
           "Sep 23",
-          "Sep 24"
+          "Sep 24",
+          "Sep 25"
         ],
         "22k": [
-          15120,
           15120,
           14760,
           14615,
@@ -399,10 +398,10 @@
           14380,
           14380,
           14295,
+          14245,
           14245
         ],
         "24k": [
-          15876,
           15876,
           15498,
           15346,
@@ -431,10 +430,10 @@
           15099,
           15099,
           15010,
+          14957,
           14957
         ],
         "18k": [
-          12380,
           12380,
           12085,
           11966,
@@ -463,6 +462,7 @@
           11774,
           11774,
           11704,
+          11663,
           11663
         ]
       }
@@ -493,7 +493,6 @@
       },
       "monthlyTrend": {
         "labels": [
-          "Aug 26",
           "Aug 27",
           "Aug 28",
           "Aug 29",
@@ -522,10 +521,10 @@
           "Sep 21",
           "Sep 22",
           "Sep 23",
-          "Sep 24"
+          "Sep 24",
+          "Sep 25"
         ],
         "22k": [
-          15114,
           15114,
           14754,
           14609,
@@ -554,10 +553,10 @@
           14374,
           14374,
           14289,
+          14239,
           14239
         ],
         "24k": [
-          15870,
           15870,
           15492,
           15339,
@@ -586,10 +585,10 @@
           15093,
           15093,
           15003,
+          14951,
           14951
         ],
         "18k": [
-          12375,
           12375,
           12080,
           11962,
@@ -618,6 +617,7 @@
           11769,
           11769,
           11700,
+          11659,
           11659
         ]
       }
