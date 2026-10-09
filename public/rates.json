@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-09T00:26:31.887510+05:30",
+  "lastUpdated": "2026-10-09T14:59:01.010365+05:30",
   "marketUpdate": "India 22K gold held steady today, with indicative prices near Rs. 13,660 per gram and unchanged from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
@@ -163,22 +163,22 @@
         "22k": {
           "perGram": 13710,
           "per10g": 137100,
-          "change": 35
+          "change": 0
         },
         "24k": {
           "perGram": 14396,
           "per10g": 143960,
-          "change": 37
+          "change": 0
         },
         "18k": {
           "perGram": 11225,
           "per10g": 112254,
-          "change": 28
+          "change": 0
         },
         "silver": {
           "perGram": 274,
           "perKg": 273520,
-          "change": 1
+          "change": 0
         }
       },
       "monthlyTrend": {
@@ -318,22 +318,22 @@
         "22k": {
           "perGram": 13820,
           "per10g": 138200,
-          "change": 50
+          "change": 0
         },
         "24k": {
           "perGram": 14511,
           "per10g": 145110,
-          "change": 52
+          "change": 0
         },
         "18k": {
           "perGram": 11316,
           "per10g": 113155,
-          "change": 40
+          "change": 0
         },
         "silver": {
           "perGram": 276,
           "perKg": 275710,
-          "change": 1
+          "change": 0
         }
       },
       "monthlyTrend": {
@@ -473,22 +473,22 @@
         "22k": {
           "perGram": 13814,
           "per10g": 138140,
-          "change": 50
+          "change": 0
         },
         "24k": {
           "perGram": 14505,
           "per10g": 145050,
-          "change": 53
+          "change": 0
         },
         "18k": {
           "perGram": 11311,
           "per10g": 113106,
-          "change": 41
+          "change": 0
         },
         "silver": {
           "perGram": 276,
           "perKg": 275590,
-          "change": 1
+          "change": 0
         }
       },
       "monthlyTrend": {
