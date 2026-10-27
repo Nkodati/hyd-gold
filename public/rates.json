@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-27T00:15:53.665061+05:30",
+  "lastUpdated": "2026-10-27T13:45:59.673998+05:30",
   "marketUpdate": "India 22K gold moved higher today, with indicative prices near Rs. 13,085 per gram and up by Rs. 15 per gram from yesterday. Currency trends, international bullion cues, and local jewellery demand remained the main factors in trade sentiment.",
   "cities": {
     "chennai": {
@@ -8,17 +8,17 @@
         "22k": {
           "perGram": 13085,
           "per10g": 130850,
-          "change": 15
+          "change": 0
         },
         "24k": {
           "perGram": 13739,
           "per10g": 137390,
-          "change": 15
+          "change": 0
         },
         "18k": {
           "perGram": 10714,
           "per10g": 107137,
-          "change": 13
+          "change": 0
         },
         "silver": {
           "perGram": 261,
@@ -163,17 +163,17 @@
         "22k": {
           "perGram": 13085,
           "per10g": 130850,
-          "change": 15
+          "change": 0
         },
         "24k": {
           "perGram": 13739,
           "per10g": 137390,
-          "change": 15
+          "change": 0
         },
         "18k": {
           "perGram": 10714,
           "per10g": 107137,
-          "change": 13
+          "change": 0
         },
         "silver": {
           "perGram": 261,
@@ -318,17 +318,17 @@
         "22k": {
           "perGram": 13195,
           "per10g": 131950,
-          "change": 15
+          "change": 0
         },
         "24k": {
           "perGram": 13855,
           "per10g": 138550,
-          "change": 16
+          "change": 0
         },
         "18k": {
           "perGram": 10804,
           "per10g": 108038,
-          "change": 13
+          "change": 0
         },
         "silver": {
           "perGram": 263,
@@ -473,17 +473,17 @@
         "22k": {
           "perGram": 13189,
           "per10g": 131890,
-          "change": 15
+          "change": 0
         },
         "24k": {
           "perGram": 13848,
           "per10g": 138480,
-          "change": 15
+          "change": 0
         },
         "18k": {
           "perGram": 10799,
           "per10g": 107988,
-          "change": 12
+          "change": 0
         },
         "silver": {
           "perGram": 263,
